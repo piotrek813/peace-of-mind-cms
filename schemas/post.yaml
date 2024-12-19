@@ -1,0 +1,51 @@
+label: Blog Post
+name: post
+icon: document-text
+sidebar_position: 1
+
+fields:
+  title:
+    type: text
+    name: title
+    label: Post Title
+    required: true
+
+  author:
+    type: group
+    name: author
+    label: Author Information
+    fields:
+      name:
+        type: text
+        name: name
+        label: Author Name
+        required: true
+        default: Anonymous
+      
+      bio:
+        type: textarea
+        name: bio
+        label: Author Biography
+        default: No biography provided.
+      
+      social:
+        type: group
+        name: social
+        label: Social Media
+        fields:
+          twitter:
+            type: text
+            name: twitter
+            label: Twitter Handle
+            default: "@"
+          website:
+            type: text
+            name: website
+            label: Website URL
+            default: https://
+
+  content:
+    type: textarea
+    name: content
+    label: Post Content
+    required: true

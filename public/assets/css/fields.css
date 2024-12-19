@@ -1,0 +1,11 @@
+.group-field-content {
+    transition: max-height 0.3s ease-out;
+}
+
+.group-field-content.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: 0;
+} 
