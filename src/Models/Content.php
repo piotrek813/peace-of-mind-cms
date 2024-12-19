@@ -61,14 +61,12 @@ class Content
         return $stmt->execute(['id' => $id]);
     }
 
-    public function getById(int $id): ?array
+    public function getById(int $id)
     {
-        $sql = "SELECT * FROM content WHERE id = :id";
+        $sql = "SELECT * FROM content WHERE id = :id LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $id]);
-        
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result;
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getByType(string $type, int $userId): array

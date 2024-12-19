@@ -45,16 +45,21 @@ class DashboardController extends Controller
     public function editor($id = null)
     {
         $type = $_GET['type'] ?? 'post';
+        $id = intval($_GET['id']);
         $username = $_SESSION['username'] ?? 'User';
         $schemas = $this->schemaService->getSchemas();
         $schema = $this->schemaService->getSchema($type);
         
         $entry = null;
+        
         if ($id) {
             $entry = $this->content->getById($id);
 
-            var_dump($entry);
-            exit;
+            if (!$entry) {
+                header('Location: /dashboard?error=Entry not found');
+                exit;
+            }
+
             if ($entry['user_id'] != $_SESSION['user_id']) {
                 header('Location: /dashboard?error=Unauthorized');
                 exit;

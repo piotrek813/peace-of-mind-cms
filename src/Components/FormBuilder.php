@@ -10,10 +10,12 @@ use App\Components\Fields\GroupField;
 class FormBuilder
 {
     private array $schema;
+    private array $data;
 
-    public function __construct(string $schemaPath)
+    public function __construct(string $schemaPath, array $data = [])
     {
         $this->schema = yaml_parse_file($schemaPath);
+        $this->data = $data;
     }
 
     public function render(): string
@@ -21,10 +23,18 @@ class FormBuilder
         $html = '';
         foreach ($this->schema['fields'] as $name => $field) {
             $field['name'] = $name;
+            $field['value'] = $this->getValue($name, $field);
             $html .= $this->createField($field)->render();
         }
-        $html .= '<input type="hidden" name="type" value="' . $this->schema['name'] . '"/>';
         return $html;
+    }
+
+    private function getValue(string $name, array $field): mixed
+    {
+        if (isset($field['fields'])) {
+            return $this->data[$name] ?? [];
+        }
+        return $this->data[$name] ?? ($field['default'] ?? null);
     }
 
     private function createField(array $field): object
@@ -33,32 +43,36 @@ class FormBuilder
         $name = $field['name'];
         $label = $field['label'];
         $required = $field['required'] ?? false;
-        
+        $value = $field['value'];
+
         return match ($type) {
             'text' => new TextField(
                 $name,
                 $label,
                 $required,
-                $field['default'] ?? null
+                $value
             ),
             'textarea' => new TextareaField(
                 $name,
                 $label,
                 $required,
-                $field['default'] ?? null
+                $value
             ),
             'slug' => new SlugField(
                 $name,
                 $label,
                 $field['source'],
                 $required,
-                $field['default'] ?? null
+                $value
             ),
             'group' => new GroupField(
                 $name,
                 $label,
                 array_map(
-                    fn($f, $key) => $this->createField(array_merge($f, ['name' => $key])), 
+                    fn($f, $key) => $this->createField(array_merge($f, [
+                        'name' => $key,
+                        'value' => $value[$key] ?? ($f['default'] ?? null)
+                    ])), 
                     $field['fields'],
                     array_keys($field['fields'])
                 ),
