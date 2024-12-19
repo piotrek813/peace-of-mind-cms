@@ -45,15 +45,14 @@ class DashboardController extends Controller
     public function editor($id = null)
     {
         $type = $_GET['type'] ?? 'post';
-        $id = intval($_GET['id']);
         $username = $_SESSION['username'] ?? 'User';
         $schemas = $this->schemaService->getSchemas();
         $schema = $this->schemaService->getSchema($type);
         
         $entry = null;
         
-        if ($id) {
-            $entry = $this->content->getById($id);
+        if (isset($_GET['id'])) {
+            $entry = $this->content->getById($_GET['id']);
 
             if (!$entry) {
                 header('Location: /dashboard?error=Entry not found');

@@ -8,4 +8,43 @@
     padding-top: 0;
     padding-bottom: 0;
     border-top: 0;
+}
+
+.list-item {
+    transition: transform 0.2s ease;
+    list-style: none;
+}
+
+.list-item.dragging {
+    opacity: 0.5;
+    transform: scale(1.02);
+}
+
+.drag-handle {
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbingst;
+}
+
+.list-item.drag-over {
+    border: 2px dashed hsl(var(--p));
+}
+
+.field-search-modal .modal-box {
+    max-width: 32rem;
+}
+
+.field-option {
+    transition: background-color 0.2s ease;
+}
+
+.field-option:hover {
+    background-color: hsl(var(--b2));
+}
+
+.field-options {
+    max-height: 60vh;
+    overflow-y: auto;
 } 

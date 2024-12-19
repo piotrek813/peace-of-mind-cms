@@ -6,6 +6,7 @@ use App\Components\Fields\TextField;
 use App\Components\Fields\SlugField;
 use App\Components\Fields\TextareaField;
 use App\Components\Fields\GroupField;
+use App\Components\Fields\ListField;
 
 class FormBuilder
 {
@@ -77,6 +78,13 @@ class FormBuilder
                     array_keys($field['fields'])
                 ),
                 $required
+            ),
+            'list' => new ListField(
+                $name,
+                $label,
+                $field["fields"],
+                $required,
+                $value ?? []
             ),
             default => throw new \Exception("Unknown field type: {$type}")
         };

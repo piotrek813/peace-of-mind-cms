@@ -44,8 +44,33 @@ fields:
             label: Website URL
             default: https://
 
-  content:
-    type: textarea
-    name: content
-    label: Post Content
-    required: true
+  sections:
+    type: list
+    name: sections
+    label: Content Sections
+    fields:
+      title:
+        type: text
+        name: title
+        label: Section Title
+        required: true
+      content:
+        type: textarea
+        name: content
+        label: Section Content
+        required: true
+      cta:
+        type: group
+        name: cta
+        label: Call to Action
+        fields:
+          title:
+            type: text
+            name: title
+            label: Title
+            default: "Read More"
+          url:
+            type: text
+            name: url
+            label: URL
+            default: /
