@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchInput = modal.querySelector('.field-search');
         const fieldOptions = modal.querySelectorAll('.field-option');
         const listItems = listField.querySelector('.list-items');
+        const fieldConfigs = JSON.parse(listField.dataset.fields);
+
         let itemCount = listField.querySelectorAll('.list-item').length;
 
         addButton.addEventListener('click', () => {
@@ -37,53 +39,66 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (searchInput.value === "" || fieldOptions.length === 0) return;
+
+                insertField([...fieldOptions].filter(opt => opt.style.display !== 'none')[0]);
+            }
+        });
+
         fieldOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                const newItem = createListItem(
-                    listField.dataset.name,
-                    option.dataset.fieldKey,
-                    itemCount++,
-                    option.textContent.trim()
-                );
-                listItems.insertAdjacentHTML('beforeend', newItem);
-                initializeListItem(listItems.lastElementChild);
-                modal.close();
-            });
+            option.addEventListener('click', () => insertField(option));
         });
 
         // Initialize existing items
         listItems.querySelectorAll('.list-item').forEach(initializeListItem);
+
+        function insertField(option) {
+            const fieldKey = option.dataset.fieldKey;
+            const fieldConfig = fieldConfigs[fieldKey];
+            const newItem = createListItem(
+                listField.dataset.name,
+                fieldKey,
+                itemCount++,
+                fieldConfig
+            );
+            listItems.appendChild(newItem);
+            initializeListItem(listItems.lastElementChild);
+            modal.close();
+        }
     });
 
-    function createListItem(listName, fieldKey, index, label) {
-        return `
-            <div class="list-item bg-base-200 rounded-lg mb-4" data-index="${index}">
-                <div class="flex items-center p-4 border-b border-base-300">
-                    <button type="button" class="drag-handle mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                        </svg>
-                    </button>
-                    <span class="font-medium">${label}</span>
-                    <button type="button" class="delete-item ml-auto text-error">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">${label}</span>
-                        </label>
-                        <input type="text" 
-                               name="${listName}[${index}][${fieldKey}]" 
-                               class="input input-bordered w-full" 
-                               value="">
-                    </div>
-                </div>
-            </div>
-        `;
+
+    function createListItem(listName, fieldKey, index, config) {
+        const template = document.getElementById('list-item-template');
+        const clone = template.content.cloneNode(true);
+        
+        const listItem = clone.querySelector('[data-index]');
+        listItem.dataset.index = index;
+        
+        const label = listItem.querySelector('.font-medium');
+        label.textContent = config.label;
+
+        clone.querySelector('.list-item-content').appendChild(createFieldContent(listName, fieldKey, index, config));
+        
+        return clone;
+    }
+
+    function createFieldContent(listName, fieldKey, index, config) {
+        const name = `${listName}[${index}][${fieldKey}]`;
+        const templateId = `field-${fieldKey}-template`;
+        const template = document.getElementById(templateId);
+        const clone = template.content.cloneNode(true);
+
+        if (!template) {
+            return `<div class="text-error">Unknown field type: ${config.type}</div>`;
+        }
+
+        clone.id = name;
+        clone.name = name;
+
+        return clone;
     }
 
     function initializeListItem(item) {
@@ -92,15 +107,39 @@ document.addEventListener('DOMContentLoaded', function() {
             item.remove();
         });
 
-        // Make item draggable
-        item.setAttribute('draggable', true);
+        // Add collapse functionality
+        const header = item.querySelector('.list-item-header');
+        const content = item.querySelector('.list-item-content');
+        const icon = header.querySelector('.collapse-icon');
         
+        header.addEventListener('click', (e) => {
+            // Don't collapse if clicking delete or drag buttons
+            if (e.target.closest('.delete-item') || e.target.closest('.drag-handle')) {
+                return;
+            }
+            content.classList.toggle('collapsed');
+            icon.classList.toggle('rotate-180');
+        });
+
+        // Make drag handle draggable
+        const dragHandle = item.querySelector(':has(>.drag-handle)');
+        item.setAttribute('draggable', false);
+        
+        dragHandle.addEventListener('mousedown', () => {
+            item.draggable = true;
+        });
+
+        dragHandle.addEventListener('mouseup', () => {
+            item.draggable = false; 
+        });
+
         item.addEventListener('dragstart', e => {
             e.target.classList.add('dragging');
         });
 
         item.addEventListener('dragend', e => {
             e.target.classList.remove('dragging');
+            item.draggable = false;
         });
 
         item.addEventListener('dragover', e => {

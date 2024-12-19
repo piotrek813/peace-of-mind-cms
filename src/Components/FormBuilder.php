@@ -10,12 +10,12 @@ use App\Components\Fields\ListField;
 
 class FormBuilder
 {
-    private array $schema;
-    private array $data;
+    protected array $schema;
+    protected array $data;
 
-    public function __construct(string $schemaPath, array $data = [])
+    public function __construct(array $schema, array $data = [])
     {
-        $this->schema = yaml_parse_file($schemaPath);
+        $this->schema = $schema;
         $this->data = $data;
     }
 
@@ -30,7 +30,7 @@ class FormBuilder
         return $html;
     }
 
-    private function getValue(string $name, array $field): mixed
+    protected function getValue(string $name, array $field): mixed
     {
         if (isset($field['fields'])) {
             return $this->data[$name] ?? [];
@@ -38,7 +38,7 @@ class FormBuilder
         return $this->data[$name] ?? ($field['default'] ?? null);
     }
 
-    private function createField(array $field): object
+    protected function createField(array $field): object
     {
         $type = $field['type'];
         $name = $field['name'];

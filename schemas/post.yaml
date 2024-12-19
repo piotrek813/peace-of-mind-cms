@@ -52,11 +52,13 @@ fields:
       title:
         type: text
         name: title
+        default: "Section Title"
         label: Section Title
         required: true
       content:
         type: textarea
         name: content
+        default: "Section Content"
         label: Section Content
         required: true
       cta:

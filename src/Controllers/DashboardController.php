@@ -65,7 +65,7 @@ class DashboardController extends Controller
             }
         }
 
-        $form = new FormBuilder(__DIR__ . '/../../schemas/' . $type . '.yaml', json_decode($entry['data'] ?? '{}', true));
+        $form = new FormBuilder($schema, json_decode($entry['data'] ?? '{}', true));
         
         $this->render('dashboard/editor', [
             'username' => $username,
@@ -135,6 +135,9 @@ class DashboardController extends Controller
     private function processFormData(array $data): array
     {
         $result = [];
+
+        var_dump($data);
+        exit;
 
         foreach ($data as $key => $value) {
             if ($key === 'id' || $key === 'type') {

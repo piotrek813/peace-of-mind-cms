@@ -44,12 +44,7 @@ class SchemaService
         }
 
         $schema = yaml_parse_file($schemaFile);
-        return [
-            'name' => $type,
-            'label' => $schema['label'] ?? ucfirst($type),
-            'icon' => $schema['icon'] ?? 'document-text',
-            'position' => $schema['sidebar_position'] ?? 999,
-            'fields' => $schema['fields'] ?? []
-        ];
+
+        return $schema;
     }
 } 
