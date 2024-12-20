@@ -40,6 +40,12 @@ function initializeListField(listField) {
 
     addButton.addEventListener('click', (e) => {
         e.stopPropagation();
+        
+        if (fieldOptions.length === 1) {
+            insertField(fieldOptions[0]);
+            return;
+        }
+
         modal.showModal();
         searchInput.value = '';
         searchInput.focus();
@@ -81,8 +87,6 @@ function initializeListField(listField) {
             fieldConfig
         );
         listItems.appendChild(newItem);
-
-        newItem.querySelectorAll('.collapseble-header').forEach(initializeHeader);
 
         // Initialize the new item and any nested fields
         const addedItem = listItems.lastElementChild;
@@ -149,46 +153,53 @@ function initializeListItem(item) {
     const icon = header.querySelector('.collapse-icon');
     
     header.addEventListener('click', (e) => {
-        // Don't collapse if clicking delete or drag buttons
-        if (e.target.closest('.delete-item') || e.target.closest('.drag-handle')) {
+        // Don't collapse if clicking delete button
+        if (e.target.closest('.delete-item')) {
             return;
         }
         content.classList.toggle('collapsed');
         icon.classList.toggle('rotate-180');
     });
 
-    // Make drag handle draggable
-    const dragHandle = item.querySelector(':has(>.drag-handle)');
-    item.setAttribute('draggable', false);
-    
-    dragHandle.addEventListener('mousedown', () => {
+    // Drag and drop functionality
+    header.addEventListener('mousedown', (e) => {
+        // Don't initiate drag if clicking delete button
+        if (e.target.closest('.delete-item')) {
+            return;
+        }
         item.draggable = true;
     });
-
-    dragHandle.addEventListener('mouseup', () => {
-        item.draggable = false; 
-    });
-
-    item.addEventListener('dragstart', e => {
-        e.target.classList.add('dragging');
-    });
-
-    item.addEventListener('dragend', e => {
-        e.target.classList.remove('dragging');
+    
+    header.addEventListener('mouseup', () => {
         item.draggable = false;
     });
-
+    
+    item.addEventListener('dragstart', (e) => {
+        e.target.closest('.list-item').classList.add('dragging');
+    });
+    
+    item.addEventListener('dragend', (e) => {
+        e.target.closest('.list-item').classList.remove('dragging');
+        item.draggable = false;
+    });
+    
     item.addEventListener('dragover', e => {
         e.preventDefault();
-        const draggingItem = document.querySelector('.dragging');
-        const listItems = item.parentNode;
-        const siblings = [...listItems.querySelectorAll('.list-item:not(.dragging)')];
+        e.stopPropagation();
         
-        const nextSibling = siblings.find(sibling => {
-            const rect = sibling.getBoundingClientRect();
-            return e.clientY < rect.top + rect.height / 2;
-        });
-
-        listItems.insertBefore(draggingItem, nextSibling);
+        const parentList = item.parentElement.closest('.list-items');
+        const draggingItem = parentList.querySelector(':scope > .list-item.dragging');
+        
+        if (!draggingItem || draggingItem === item || draggingItem.parentElement !== parentList) return;
+        
+        const rect = item.getBoundingClientRect();
+        const offset = e.clientY - rect.top;
+        const threshold = rect.height / 2;
+        
+        if (offset < threshold) {
+            parentList.insertBefore(draggingItem, item);
+        } else {
+            parentList.insertBefore(draggingItem, item.nextElementSibling);
+        }
     });
 } 
