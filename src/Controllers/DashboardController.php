@@ -66,7 +66,7 @@ class DashboardController extends Controller
         }
 
         $form = new FormBuilder($schema, json_decode($entry['data'] ?? '{}', true));
-        
+
         $this->render('dashboard/editor', [
             'username' => $username,
             'schemas' => $schemas,

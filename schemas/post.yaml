@@ -27,6 +27,36 @@ fields:
         name: bio
         label: Author Biography
         default: No biography provided.
+
+      website:
+        type: group
+        name: website
+        label: Website URL
+        fields:
+          icon:
+            type: group
+            name: icon
+            label: Icon
+            fields:
+              icon:
+                type: text
+                name: icon
+                label: Icon
+          title:
+            type: text
+            name: title
+            label: Title
+            default: Website
+          url:
+            type: text
+            name: url
+            label: Website URL
+            default: https://
+          target:
+            type: text
+            name: target
+            label: Target
+            default: _self
       
       social:
         type: list
@@ -62,6 +92,7 @@ fields:
                 name: target
                 label: Target
                 default: _self
+
   sections:
     type: list
     name: sections

@@ -91,6 +91,20 @@ function initializeListField(listField) {
         // Initialize the new item and any nested fields
         const addedItem = listItems.lastElementChild;
 
+        // Fill in the indexes in the name attribute for the new item
+        var a = addedItem.closest("[data-index]");
+        var indexes = [];
+        while (a ) {
+            indexes.push(a.dataset.index);
+            a = a.parentNode.closest("[data-index]");
+        }
+
+        indexes.reverse().forEach((index, _) => {
+            addedItem.querySelectorAll('[name]').forEach(el => {
+                el.name = el.name.replace("{{index}}", index);
+            });
+        });
+
         addedItem.querySelectorAll('.collapseble-header').forEach(initializeHeader);
         addedItem.querySelectorAll('.list-field').forEach(initializeListField);
 
@@ -109,34 +123,26 @@ function createListItem(listName, fieldKey, index, config) {
     const label = listItem.querySelector('.font-medium');
     label.textContent = config.label;
 
-    clone.querySelector('.list-item-content').appendChild(createFieldContent(listName, fieldKey, index, config));
+    clone.querySelector('.list-item-content').appendChild(createFieldContent(listName, fieldKey, config));
     
     return clone;
 }
 
-function createFieldContent(listName, fieldKey, index, config) {
-    const templateId = `field-${fieldKey}-template`;
+function createFieldContent(listName, fieldKey, config) {
+    const templateId = `field-${listName}-${fieldKey}-template`;
     const template = document.getElementById(templateId);
-    const clone = template.content.cloneNode(true);
 
     if (!template) {
-        return `<div class="text-error">Unknown field type: ${config.type}</div>`;
+        const error = document.createElement('div');
+        error.classList.add('text-error');
+        error.textContent = `Unknown field type: ${config.type}`;
+
+        console.error(`${templateId} not found`);
+
+        return error;
     }
-    
-    const elements = clone.querySelectorAll('[name]');
-    elements.forEach((element) => {
-        let [name, ...nameParts] = element.name.split("[");
 
-        if (typeof nameParts === 'string') {
-            nameParts = '[' + nameParts;
-        } else if (typeof nameParts === 'undefined') {
-            nameParts = '';
-        } else {
-            nameParts = '[' + nameParts.join('[');
-        }
-
-        element.name = `${listName}[${index}][${name}]${nameParts}`;
-    });
+    const clone = template.content.cloneNode(true);
 
     return clone;
 }

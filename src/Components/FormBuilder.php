@@ -10,8 +10,8 @@ use App\Components\Fields\ListField;
 
 class FormBuilder
 {
-    protected array $schema;
-    protected array $data;
+    private array $schema;
+    private array $data;
 
     public function __construct(array $schema, array $data = [])
     {
@@ -27,10 +27,11 @@ class FormBuilder
             $field['value'] = $this->getValue($name, $field);
             $html .= $this->createField($field)->render();
         }
+
         return $html;
     }
 
-    protected function getValue(string $name, array $field): mixed
+    private function getValue(string $name, array $field): mixed
     {
         if (isset($field['fields'])) {
             return $this->data[$name] ?? [];
@@ -38,7 +39,7 @@ class FormBuilder
         return $this->data[$name] ?? ($field['default'] ?? null);
     }
 
-    protected function createField(array $field, int $nest_level = 0): object
+    private function createField(array $field, int $nest_level = 0): object
     {
         $type = $field['type'];
         $name = $field['name'];
@@ -86,9 +87,33 @@ class FormBuilder
                 $field["fields"],
                 $required,
                 $value ?? [],
-                $nest_level
+                $this->createTemplateFieldsForList($field["fields"], $name, $value, $nest_level),
+                $nest_level,
             ),
             default => throw new \Exception("Unknown field type: {$type}")
         };
+    }
+
+    private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): array
+    {
+        return array_map(
+            function($field, $key) use ($name, $value, $nest_level) {
+                $fieldConfig = array_merge($field, [
+                    'name' => $name . '[{{index}}][' . $key . ']',
+                    'value' => $value[$key] ?? ($field['default'] ?? null)
+                ]);
+
+                $renderedField = $this->createField($fieldConfig, $nest_level + 1);
+                
+                return sprintf(
+                    '<template id="field-%s-%s-template">%s</template>',
+                    $name,
+                    $key,
+                    $renderedField->render()
+                );
+            },
+            $fields,
+            array_keys($fields)
+        );
     }
 } 
