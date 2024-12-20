@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html data-theme="dark">
-<head>
-    <title>New Entry - Peace of Mind</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Group Field Assets -->
-    <link href="/assets/css/fields.css" rel="stylesheet" type="text/css" />
-    <script src="/assets/js/fields.js" defer></script>
-</head>
+<?php partial('head', ['includeFieldAssets' => true]); ?>
 <body class="bg-base-300 min-h-screen">
     <!-- Navigation -->
     <div class="navbar bg-base-200">
@@ -44,6 +34,7 @@
                 <?php if ($entry): ?>
                     <input type="hidden" name="id" value="<?= htmlspecialchars($entry['id']) ?>">
                 <?php endif; ?>
+
                 <?= $form->render() ?>
             </form>
         </div>

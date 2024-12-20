@@ -29,8 +29,8 @@ class ListField
         $fieldConfigs = json_encode($this->fields);
         return <<<HTML
         <div class="form-control">
-            <div class="bg-base-200 rounded-lg">
-                <div class="group-field-header flex items-center justify-between p-4 cursor-pointer">
+            <div class="bg-base-200 rounded-lg border border-base-300">
+                <div class="collapseble-header flex items-center justify-between p-4 cursor-pointer">
                     <span class="label-text">{$this->label}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" 
                          class="h-5 w-5 collapse-icon transition-transform" 
@@ -43,7 +43,7 @@ class ListField
                               d="M19 9l-7 7-7-7" />
                     </svg>
                 </div>
-                <div class="group-field-content p-4">
+                <div class="list-field-content p-4">
                     <div class="list-field" data-name="{$this->name}" data-fields='{$fieldConfigs}'>
                         <div class="list-items space-y-4">
                             {$existingItems}
@@ -126,7 +126,7 @@ class ListField
         $templates .= <<<HTML
         <template id="list-item-template">
             <div class="list-item bg-base-200 rounded-lg mb-4" data-index="{{index}}">
-                <div class="flex items-center p-4 border-b border-base-300 cursor-pointer list-item-header">
+                <div class="flex items-center p-4 cursor-pointer list-item-header">
                     <button type="button" class="drag-handle mr-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />

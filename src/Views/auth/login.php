@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html data-theme="dark">
-<head>
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php partial('head'); ?>
 <body class="min-h-screen bg-base-300 flex items-center justify-center">
     <div class="card w-96 bg-base-200 shadow-xl">
         <div class="card-body">

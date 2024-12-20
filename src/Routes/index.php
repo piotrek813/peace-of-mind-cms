@@ -12,7 +12,7 @@ $router = new Router();
 $router->addStaticDirectory('/assets', __DIR__ . '/../public/assets');
 
 // Public routes
-$router->get('/', HomeController::class, 'index');
+$router->get('/', HomeController::class, 'index', [SessionMiddleware::class]);
 $router->get('/login', AuthController::class, 'loginIndex');
 $router->post('/login', AuthController::class, 'login', [SessionMiddleware::class]);
 $router->get('/register', AuthController::class, 'registerIndex');

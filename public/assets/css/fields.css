@@ -2,20 +2,15 @@
     transition: max-height 0.3s ease-out;
 }
 
-.group-field-content.collapsed {
+:is(.group-field-content, .list-field-content, .list-item-content).collapsed {
     max-height: 0;
     overflow: hidden;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0;
     border-top: 0;
 }
 
-.list-item .group-field-header {
+.list-item-content > .form-control > .collapseble-header {
     display: none;
-}
-
-.list-item .group-field-content {
-    border-top: 0;
 }
 
 .list-item {
@@ -56,22 +51,3 @@
     max-height: 60vh;
     overflow-y: auto;
 }
-
-.list-item-content {
-    transition: max-height 0.3s ease-out;
-}
-
-.list-item-content.collapsed {
-    max-height: 0;
-    overflow: hidden;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-.list-item .collapse-icon {
-    transition: transform 0.2s ease;
-}
-
-.list-item .collapse-icon.rotate-180 {
-    transform: rotate(180deg);
-} 

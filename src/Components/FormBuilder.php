@@ -71,7 +71,7 @@ class FormBuilder
                 $label,
                 array_map(
                     fn($f, $key) => $this->createField(array_merge($f, [
-                        'name' => $key,
+                        'name' => $name . '[' . $key . ']',
                         'value' => $value[$key] ?? ($f['default'] ?? null)
                     ])), 
                     $field['fields'],

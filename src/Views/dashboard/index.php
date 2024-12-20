@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html data-theme="dark">
-<head>
-    <title>Dashboard - Peace of Mind</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php partial('head'); ?>
 <body class="bg-base-300 min-h-screen">
     <!-- Navigation -->
     <div class="navbar bg-base-200">

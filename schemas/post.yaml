@@ -71,8 +71,13 @@ fields:
             name: title
             label: Title
             default: "Read More"
-          url:
-            type: text
-            name: url
-            label: URL
-            default: /
+          targets:
+            type: list
+            name: targets
+            label: Targets
+            fields:
+              url:
+                type: text
+                name: url
+                label: URL
+                default: /

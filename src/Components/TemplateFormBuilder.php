@@ -18,8 +18,8 @@ class TemplateFormBuilder extends FormBuilder
     public function render(): string
     {
         $html = '';
+        $i = 0;
         foreach ($this->schema as $name => $field) {
-            $field['name'] = $name;
             $field['value'] = $this->getValue($name, $field);
             $html .= '<template id="field-'.$name.'-template">'.$this->createField($field)->render().'</template>';
         }

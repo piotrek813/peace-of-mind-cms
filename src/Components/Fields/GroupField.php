@@ -20,9 +20,8 @@ class GroupField
     public function render(): string
     {
         return <<<HTML
-        <div class="form-control">
-            <div class="bg-base-200 rounded-lg">
-                <div class="group-field-header flex items-center justify-between p-4 cursor-pointer">
+        <div class="form-control border border-base-300 bg-base-200 rounded-lg">
+                <div class="collapseble-header flex items-center justify-between p-4 cursor-pointer">
                     <span class="font-medium">{$this->label}</span>
                     <svg class="collapse-icon w-5 h-5 transition-transform duration-200" 
                          xmlns="http://www.w3.org/2000/svg" 
@@ -33,10 +32,9 @@ class GroupField
                               clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="group-field-content p-4 border-t border-base-300">
+                <div class="group-field-content border-t border-base-300 p-4 grid gap-4">
                     {$this->renderFields()}
                 </div>
-            </div>
         </div>
         HTML;
     }

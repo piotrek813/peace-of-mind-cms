@@ -136,7 +136,9 @@ class DashboardController extends Controller
     {
         $result = [];
 
-        var_dump($data);
+        echo  '<pre>';  
+        echo json_encode($data, JSON_PRETTY_PRINT);
+        echo  '</pre>';
         exit;
 
         foreach ($data as $key => $value) {
