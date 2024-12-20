@@ -97,9 +97,31 @@
                                     ?>
                                         <tr>
                                             <?php foreach (json_decode($data, true) as $value): ?>
-                                                <td>
-                                                    <?= htmlspecialchars(substr($value, 0, 50)) . (strlen($value) > 50 ? '...' : '') ?>
-                                                </td>
+                                                <?php if (is_array($value)): ?>
+                                                    <td>
+                                                        <button onclick="showArrayData(this)" 
+                                                                class="btn btn-ghost btn-xs"
+                                                                data-array='<?= htmlspecialchars(json_encode($value)) ?>'>
+                                                            View Data
+                                                        </button>
+                                                        
+                                                        <dialog class="modal">
+                                                            <div class="modal-box">
+                                                                <h3 class="font-bold text-lg mb-4">Array Data</h3>
+                                                                <div class="array-content whitespace-pre-wrap font-mono text-sm bg-base-300 p-4 rounded-lg overflow-auto max-h-96"></div>
+                                                                <div class="modal-action">
+                                                                    <form method="dialog">
+                                                                        <button class="btn">Close</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </dialog>
+                                                    </td>
+                                                <?php else: ?>
+                                                    <td>
+                                                        <?= htmlspecialchars(substr($value, 0, 50)) . (strlen($value) > 50 ? '...' : '') ?>
+                                                    </td>
+                                                <?php endif; ?>
                                             <?php endforeach; ?>
                                             <td><?= htmlspecialchars(date('Y-m-d H:i', strtotime($entry['created_at']))) ?></td>
                                             <td>

@@ -105,7 +105,6 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
             header('Location: /editor?type=' . urlencode($type) . '&error=' . urlencode($e->getMessage()));
         }
-        exit;
     }
 
     public function deleteEntry()
@@ -129,17 +128,11 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
             header('Location: /dashboard?type=' . urlencode($type) . '&error=' . urlencode($e->getMessage()));
         }
-        exit;
     }
 
     private function processFormData(array $data): array
     {
         $result = [];
-
-        echo  '<pre>';  
-        echo json_encode($data, JSON_PRETTY_PRINT);
-        echo  '</pre>';
-        exit;
 
         foreach ($data as $key => $value) {
             if ($key === 'id' || $key === 'type') {

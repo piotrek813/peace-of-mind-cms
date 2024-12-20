@@ -11,4 +11,6 @@
     <!-- Field-specific assets -->
     <link href="/assets/css/fields.css" rel="stylesheet" type="text/css" />
     <script src="/assets/js/fields.js" defer></script>
+
+    <script src="/assets/js/dashboard.js" defer></script>
 </head>
