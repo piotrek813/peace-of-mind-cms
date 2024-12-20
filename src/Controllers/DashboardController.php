@@ -86,7 +86,7 @@ class DashboardController extends Controller
         $id = $_POST['id'] ?? null;
         $type = $_POST['type'] ?? 'post';
         $data = $this->processFormData($_POST);
-        
+
         // Remove technical fields from data
         unset($data['id']);
         unset($data['type']);

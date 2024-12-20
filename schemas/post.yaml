@@ -9,6 +9,12 @@ fields:
     name: title
     label: Post Title
     required: true
+  
+  show_in_feed:
+    type: bool
+    name: show_in_feed
+    label: Show in Feed
+    default: true
 
   author:
     type: group

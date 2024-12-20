@@ -7,6 +7,7 @@ use App\Components\Fields\SlugField;
 use App\Components\Fields\TextareaField;
 use App\Components\Fields\GroupField;
 use App\Components\Fields\ListField;
+use App\Components\Fields\BoolField;
 
 class FormBuilder
 {
@@ -64,6 +65,12 @@ class FormBuilder
                 $name,
                 $label,
                 $field['source'],
+                $required,
+                $value
+            ),
+            'bool' => new BoolField(
+                $name,
+                $label,
                 $required,
                 $value
             ),
