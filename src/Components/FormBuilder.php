@@ -38,7 +38,7 @@ class FormBuilder
         return $this->data[$name] ?? ($field['default'] ?? null);
     }
 
-    protected function createField(array $field): object
+    protected function createField(array $field, int $nest_level = 0): object
     {
         $type = $field['type'];
         $name = $field['name'];
@@ -73,18 +73,20 @@ class FormBuilder
                     fn($f, $key) => $this->createField(array_merge($f, [
                         'name' => $name . '[' . $key . ']',
                         'value' => $value[$key] ?? ($f['default'] ?? null)
-                    ])), 
+                    ]), $nest_level + 1), 
                     $field['fields'],
                     array_keys($field['fields'])
                 ),
-                $required
+                $required,
+                $nest_level
             ),
             'list' => new ListField(
                 $name,
                 $label,
                 $field["fields"],
                 $required,
-                $value ?? []
+                $value ?? [],
+                $nest_level
             ),
             default => throw new \Exception("Unknown field type: {$type}")
         };

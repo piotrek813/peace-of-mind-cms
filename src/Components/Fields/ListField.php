@@ -11,14 +11,15 @@ class ListField
     private array $fields;
     private bool $required;
     private array $value;
-
-    public function __construct(string $name, string $label, array $fields, bool $required = false, array $value = [])
+    private int $nest_level;
+    public function __construct(string $name, string $label, array $fields, bool $required = false, array $value = [], int $nest_level = 0)
     {
         $this->name = $name;
         $this->label = $label;
         $this->fields = $fields;
         $this->required = $required;
         $this->value = $value;
+        $this->nest_level = $nest_level;
     }
 
     public function render(): string
@@ -27,9 +28,12 @@ class ListField
         $fieldOptions = $this->renderFieldOptions();
         $fieldTemplates = $this->renderFieldTemplates();
         $fieldConfigs = json_encode($this->fields);
+
+        $background = $this->nest_level %  2 == 0 ? 'bg-base-200' : 'bg-base-300';
+
         return <<<HTML
         <div class="form-control">
-            <div class="bg-base-200 rounded-lg border border-base-300">
+            <div class="{$background} rounded-lg">
                 <div class="collapseble-header flex items-center justify-between p-4 cursor-pointer">
                     <span class="label-text">{$this->label}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" 

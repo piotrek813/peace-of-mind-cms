@@ -29,21 +29,39 @@ fields:
         default: No biography provided.
       
       social:
-        type: group
+        type: list
         name: social
         label: Social Media
         fields:
-          twitter:
-            type: text
-            name: twitter
-            label: Twitter Handle
-            default: "@"
           website:
-            type: text
+            type: group
             name: website
             label: Website URL
-            default: https://
-
+            fields:
+              icon:
+                type: group
+                name: icon
+                label: Icon
+                fields:
+                  icon:
+                    type: text
+                    name: icon
+                    label: Icon
+              title:
+                type: text
+                name: title
+                label: Title
+                default: Website
+              url:
+                type: text
+                name: url
+                label: Website URL
+                default: https://
+              target:
+                type: text
+                name: target
+                label: Target
+                default: _self
   sections:
     type: list
     name: sections
