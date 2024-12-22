@@ -46,17 +46,7 @@ class FormBuilder
         $name = $field['name'];
         $label = $field['label'];
         $required = $field['required'] ?? false;
-        $value = $field['value'] ?? [];
-
-        if ($type=="group") {
-            echo "<pre>";
-            var_dump(json_encode($field, JSON_PRETTY_PRINT));
-            echo "</pre>";
-        }
-
-        if ($type === 'list') {
-            $this->createTemplateFieldsForList($field['fields'], $name, $value, $nest_level);
-        }
+        $value = $field['value'];
 
         return match ($type) {
             'text' => new TextField(
@@ -102,9 +92,9 @@ class FormBuilder
                 $name,
                 $label,
                 $required,
-                $this->create_list_fields($value, $field, $name, $nest_level),
+                $this->create_list_fields($value ?? [], $field, $name, $nest_level),
                 $field["fields"],
-                "",
+                $this->createTemplateFieldsForList($field["fields"], $name, $value, $nest_level),
                 $nest_level,
             ),
             default => throw new \Exception("Unknown field type: {$type}")
@@ -130,38 +120,27 @@ class FormBuilder
             $value
         );
     }
-   
 
-    private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): array
+    private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): string
     {
-        return array_map(
-            function($field, $key) use ($name,$fields, $value, $nest_level) {
+        return join("", array_map(
+            function($field, $key) use ($name, $value, $nest_level) {
                 $fieldConfig = array_merge($field, [
                     'name' => $name . '[{{index}}][' . $key . ']',
                     'value' => $value[$key] ?? ($field['default'] ?? null)
                 ]);
 
-                $renderedField = "";
-
-                if ($field['type'] != 'group') {
-                    $renderedField = $this->createField($fieldConfig, $nest_level + 1)->render();
-                }
-
-                echo "<pre>";
-                var_dump(json_encode($fieldConfig, JSON_PRETTY_PRINT));
-                echo "</pre>";
-
-
+                $renderedField = $this->createField($fieldConfig, $nest_level + 1);
                 
                 return sprintf(
                     '<template id="field-%s-%s-template">%s</template>',
                     $name,
                     $key,
-                    $renderedField
+                    $renderedField->render()
                 );
             },
             $fields,
             array_keys($fields)
-        );
+        ));
     }
 } 
