@@ -81,9 +81,8 @@
                                 <thead>
                                     <tr>
                                         <?php 
-                                        $firstEntry = reset($entries);
-                                        $data = $firstEntry['data'];
-                                        foreach (array_keys(json_decode($data, true)) as $column): 
+                                        $headers = array_map(fn($f) => $f['label'], $activeSchema['fields']);
+                                        foreach (array_values($headers) as $column): 
                                         ?>
                                             <th><?= htmlspecialchars(ucwords(str_replace('_', ' ', $column))) ?></th>
                                         <?php endforeach; ?>
@@ -93,10 +92,12 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($entries as $entry): 
-                                        $data = $entry['data'];
+                                        $data = json_decode($entry['data'], true);
                                     ?>
                                         <tr>
-                                            <?php foreach (json_decode($data, true) as $value): ?>
+                                            <?php foreach (array_keys($headers) as $header): 
+                                                $value = $data[$header] ?? '';
+                                            ?>
                                                 <?php if (is_array($value)): ?>
                                                     <td>
                                                         <button onclick="showArrayData(this)" 

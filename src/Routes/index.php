@@ -9,8 +9,6 @@ use App\Middleware\AuthMiddleware;
 
 $router = new Router();
 
-$router->addStaticDirectory('/assets', __DIR__ . '/../public/assets');
-
 // Public routes
 $router->get('/', HomeController::class, 'index', [SessionMiddleware::class]);
 $router->get('/login', AuthController::class, 'loginIndex');

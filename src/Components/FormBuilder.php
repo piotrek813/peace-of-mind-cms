@@ -46,7 +46,17 @@ class FormBuilder
         $name = $field['name'];
         $label = $field['label'];
         $required = $field['required'] ?? false;
-        $value = $field['value'];
+        $value = $field['value'] ?? [];
+
+        if ($type=="group") {
+            echo "<pre>";
+            var_dump(json_encode($field, JSON_PRETTY_PRINT));
+            echo "</pre>";
+        }
+
+        if ($type === 'list') {
+            $this->createTemplateFieldsForList($field['fields'], $name, $value, $nest_level);
+        }
 
         return match ($type) {
             'text' => new TextField(
@@ -77,6 +87,7 @@ class FormBuilder
             'group' => new GroupField(
                 $name,
                 $label,
+                $required,
                 array_map(
                     fn($f, $key) => $this->createField(array_merge($f, [
                         'name' => $name . '[' . $key . ']',
@@ -85,38 +96,68 @@ class FormBuilder
                     $field['fields'],
                     array_keys($field['fields'])
                 ),
-                $required,
                 $nest_level
             ),
             'list' => new ListField(
                 $name,
                 $label,
-                $field["fields"],
                 $required,
-                $value ?? [],
-                $this->createTemplateFieldsForList($field["fields"], $name, $value, $nest_level),
+                $this->create_list_fields($value, $field, $name, $nest_level),
+                $field["fields"],
+                "",
                 $nest_level,
             ),
             default => throw new \Exception("Unknown field type: {$type}")
         };
     }
 
+    private function create_list_fields(array $value, array $field, string $name, int $nest_level): array
+    {
+        return array_map(
+            function($value) use ($name, $field, $nest_level) {
+                $key = array_keys($value)[0];
+                return $this->createField(
+                    array_merge(
+                        [
+                            'name' => $name . '[' . $key . ']',
+                            'value' => $value[$key]
+                        ],
+                        $field["fields"][$key]
+                    ),
+                    $nest_level + 1
+                );
+            },
+            $value
+        );
+    }
+   
+
     private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): array
     {
         return array_map(
-            function($field, $key) use ($name, $value, $nest_level) {
+            function($field, $key) use ($name,$fields, $value, $nest_level) {
                 $fieldConfig = array_merge($field, [
                     'name' => $name . '[{{index}}][' . $key . ']',
                     'value' => $value[$key] ?? ($field['default'] ?? null)
                 ]);
 
-                $renderedField = $this->createField($fieldConfig, $nest_level + 1);
+                $renderedField = "";
+
+                if ($field['type'] != 'group') {
+                    $renderedField = $this->createField($fieldConfig, $nest_level + 1)->render();
+                }
+
+                echo "<pre>";
+                var_dump(json_encode($fieldConfig, JSON_PRETTY_PRINT));
+                echo "</pre>";
+
+
                 
                 return sprintf(
                     '<template id="field-%s-%s-template">%s</template>',
                     $name,
                     $key,
-                    $renderedField->render()
+                    $renderedField
                 );
             },
             $fields,

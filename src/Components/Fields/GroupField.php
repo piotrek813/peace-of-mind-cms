@@ -6,16 +6,16 @@ class GroupField
 {
     private string $name;
     private string $label;
-    private array $fields;
     private bool $required;
+    private array $fields;
     private int $nest_level;
 
-    public function __construct(string $name, string $label, array $fields, bool $required = false, int $nest_level = 0)
+    public function __construct(string $name, string $label, bool $required, array $fields, int $nest_level = 0)
     {
         $this->name = $name;
         $this->label = $label;
-        $this->fields = $fields;
         $this->required = $required;
+        $this->fields = $fields;
         $this->nest_level = $nest_level;
     }
 

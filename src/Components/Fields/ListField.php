@@ -2,33 +2,29 @@
 
 namespace App\Components\Fields;
 
-use App\Components\TemplateFormBuilder;
-
 class ListField
 {
     private string $name;
     private string $label;
-    private array $fields;
     private bool $required;
     private array $value;
+    private array $fields;
     private int $nest_level;
-    private array $templateFields;
+    private string $templates;
 
-    public function __construct(string $name, string $label, array $fields, bool $required = false, array $value = [], array $templateFields = [], int $nest_level = 0)
+    public function __construct(string $name, string $label, bool $required = false, array $value = [], array $fields = [], string $templates = '', int $nest_level = 0)
     {
         $this->name = $name;
         $this->label = $label;
-        $this->fields = $fields;
         $this->required = $required;
         $this->value = $value;
+        $this->fields = $fields;
+        $this->templates = $templates;
         $this->nest_level = $nest_level;
-        $this->templateFields = $templateFields;
     }
 
     public function render(): string
     {
-        $existingItems = $this->renderExistingItems();
-        $fieldOptions = $this->renderFieldOptions();
         $fieldConfigs = json_encode($this->fields);
 
         return <<<HTML
@@ -50,7 +46,7 @@ class ListField
                 <div class="list-field-content p-3 sm:p-4">
                     <div class="list-field" data-name="{$this->name}" data-fields='{$fieldConfigs}'>
                         <div class="list-items space-y-2 sm:space-y-4">
-                            {$existingItems}
+                            {$this->renderExistingItems()}
                         </div>
                         <button type="button" class="add-item btn btn-ghost mt-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,7 +82,8 @@ class ListField
                                 </div>
                             </div>
                         </template>
-                        {$this->renderTemplateFields()}
+
+                        {$this->templates}
 
                         <dialog class="modal field-search-modal">
                             <div class="modal-box">
@@ -100,7 +97,7 @@ class ListField
                                 </div>
                                 <input type="text" class="field-search input input-bordered w-full mb-4" placeholder="Search fields...">
                                 <div class="field-options space-y-2">
-                                    {$fieldOptions}
+                                    {$this->renderFieldOptions()}
                                 </div>
                             </div>
                             <div class="modal-backdrop"></div>
@@ -144,17 +141,8 @@ class ListField
     private function renderExistingItems(): string
     {
         $html = '';
-        foreach ($this->value as $index => $item) {
-            $html .= $this->renderListItem($index, $item);
-        }
-        return $html;
-    }
-
-    private function renderTemplateFields(): string
-    {
-        $html = '';
-        foreach ($this->templateFields as $templateField) {
-            $html .= $templateField;
+        foreach ($this->value as $field) {
+            $html .= $field->render();
         }
         return $html;
     }
