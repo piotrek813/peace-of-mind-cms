@@ -5,7 +5,7 @@ namespace App\Components\Fields;
 class TextareaField
 {
     private string $name;
-    private string $label;
+    public string $label;
     private bool $required;
     private ?string $value;
 

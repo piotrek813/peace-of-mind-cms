@@ -5,7 +5,7 @@ namespace App\Components\Fields;
 class GroupField
 {
     private string $name;
-    private string $label;
+    public string $label;
     private bool $required;
     private array $fields;
     private int $nest_level;

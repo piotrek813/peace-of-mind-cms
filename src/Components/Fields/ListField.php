@@ -5,7 +5,7 @@ namespace App\Components\Fields;
 class ListField
 {
     private string $name;
-    private string $label;
+    public string $label;
     private bool $required;
     private array $value;
     private array $fields;
@@ -56,31 +56,7 @@ class ListField
                         </button>
 
                         <template id="list-item-template">
-                            <div class="list-item bg-base-200 rounded-lg mb-4" data-index="{{index}}">
-                                <div class="flex items-center p-4 cursor-pointer list-item-header">
-                                    <button type="button" class="drag-handle mr-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                                        </svg>
-                                    </button>
-                                    <span class="font-medium flex-1">{{label}}</span>
-                                    <svg class="collapse-icon w-5 h-5 transition-transform mr-2" 
-                                         xmlns="http://www.w3.org/2000/svg" 
-                                         viewBox="0 0 20 20" 
-                                         fill="currentColor">
-                                        <path fill-rule="evenodd" 
-                                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" 
-                                              clip-rule="evenodd" />
-                                    </svg>
-                                    <button type="button" class="delete-item text-error">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="p-4 list-item-content">
-                                </div>
-                            </div>
+                            {$this->renderListItem()}
                         </template>
 
                         {$this->templates}
@@ -138,11 +114,43 @@ class ListField
         return $field->type ?? 'text';
     }
 
+    private function renderListItem(string $child = "", string $index = "{{index}}", string $label = "{{label}}"): string {
+        return <<<HTML
+            <div class="list-item bg-base-200 rounded-lg mb-4" data-index={$index}>
+                <div class="flex items-center p-4 cursor-pointer list-item-header">
+                    <button type="button" class="drag-handle mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                        </svg>
+                    </button>
+                    <span class="font-medium flex-1">{$label}</span>
+                    <svg class="collapse-icon w-5 h-5 transition-transform mr-2" 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            viewBox="0 0 20 20" 
+                            fill="currentColor">
+                        <path fill-rule="evenodd" 
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" 
+                                clip-rule="evenodd" />
+                    </svg>
+                    <button type="button" class="delete-item text-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-4 list-item-content">
+                    {$child}
+                </div>
+            </div>
+        HTML;
+    }
+
     private function renderExistingItems(): string
     {
         $html = '';
+        $i = 0;
         foreach ($this->value as $field) {
-            $html .= $field->render();
+            $html .= $this->renderListItem($field->render(), $i++, $field->label);
         }
         return $html;
     }

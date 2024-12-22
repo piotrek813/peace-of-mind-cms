@@ -5,7 +5,7 @@ namespace App\Components\Fields;
 class TextField
 {
     protected string $name;
-    protected string $label;
+    public string $label;
     protected bool $required;
     protected ?string $value;
 

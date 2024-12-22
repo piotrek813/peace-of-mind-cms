@@ -5,7 +5,7 @@ namespace App\Components\Fields;
 class BoolField
 {
     private string $name;
-    private string $label;
+    public string $label;
     private bool $required;
     private mixed $value;
 

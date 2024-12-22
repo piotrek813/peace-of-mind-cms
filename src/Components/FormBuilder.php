@@ -108,11 +108,11 @@ class FormBuilder
                 $key = array_keys($value)[0];
                 return $this->createField(
                     array_merge(
+                        $field["fields"][$key],
                         [
-                            'name' => $name . '[' . $key . ']',
+                            'name' => $name . '[{{index}}][' . $key . ']',
                             'value' => $value[$key]
                         ],
-                        $field["fields"][$key]
                     ),
                     $nest_level + 1
                 );
