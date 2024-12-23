@@ -136,3 +136,8 @@ fields:
                 name: url
                 label: URL
                 default: /
+  media:
+    type: media
+    name: media
+    label: Media
+    required: false

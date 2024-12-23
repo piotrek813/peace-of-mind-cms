@@ -3,6 +3,7 @@
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
+use App\Controllers\MediaController;
 use App\Router;
 use App\Middleware\SessionMiddleware;
 use App\Middleware\AuthMiddleware;
@@ -22,5 +23,7 @@ $router->get('/editor', DashboardController::class, 'editor', [SessionMiddleware
 $router->post('/editor', DashboardController::class, 'saveEntry', [SessionMiddleware::class, AuthMiddleware::class]);
 $router->get('/logout', AuthController::class, 'logout', [SessionMiddleware::class, AuthMiddleware::class]);
 $router->post('/delete-entry', DashboardController::class, 'deleteEntry', [SessionMiddleware::class, AuthMiddleware::class]);
+
+$router->get('/media-library', MediaController::class, 'index', [SessionMiddleware::class, AuthMiddleware::class]);
 
 $router->dispatch();
