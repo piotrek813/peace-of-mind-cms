@@ -8,10 +8,14 @@ class Router
 
     private function addRoute($route, $controller, $action, $method, $middleware = [])
     {
-        $this->routes[$method][$route] = [
+        // Convert route parameters to regex pattern
+        $pattern = preg_replace('/\{([a-zA-Z]+)\}/', '(?P<$1>[^/]+)', $route);
+        
+        $this->routes[$method][$pattern] = [
             'controller' => $controller, 
             'action' => $action,
-            'middleware' => $middleware
+            'middleware' => $middleware,
+            'original' => $route
         ];
     }
 
@@ -25,27 +29,39 @@ class Router
         $this->addRoute($route, $controller, $action, "POST", $middleware);
     }
 
+    public function delete($route, $controller, $action, $middleware = [])
+    {
+        $this->addRoute($route, $controller, $action, "DELETE", $middleware);
+    }
+
     public function dispatch()
     {
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
         $method = $_SERVER['REQUEST_METHOD'];
 
-
-        if (array_key_exists($uri, $this->routes[$method])) {
-            $route = $this->routes[$method][$uri];
+        foreach ($this->routes[$method] ?? [] as $pattern => $route) {
+            // Add start and end delimiters to pattern
+            $pattern = '#^' . $pattern . '$#';
             
-            foreach ($route['middleware'] as $middlewareClass) {
-                $middleware = new $middlewareClass();
-                $middleware->handle();
+            if (preg_match($pattern, $uri, $matches)) {
+                // Remove numeric keys from matches
+                $params = array_filter($matches, function($key) {
+                    return !is_numeric($key);
+                }, ARRAY_FILTER_USE_KEY);
+                
+                foreach ($route['middleware'] as $middlewareClass) {
+                    $middleware = new $middlewareClass();
+                    $middleware->handle();
+                }
+
+                $controller = $route['controller'];
+                $action = $route['action'];
+
+                $controller = new $controller();
+                return $controller->$action(...array_values($params));
             }
-
-            $controller = $route['controller'];
-            $action = $route['action'];
-
-            $controller = new $controller();
-            $controller->$action();
-        } else {
-            throw new \Exception("No route found for URI: $uri");
         }
+
+        throw new \Exception("No route found for URI: $uri");
     }
 }

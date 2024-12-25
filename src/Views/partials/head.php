@@ -13,4 +13,12 @@
     <script src="public/assets/js/fields.js" defer></script>
 
     <script src="public/assets/js/dashboard.js" defer></script>
+    <script src="public/assets/js/media.js" defer></script>
+    <script src="public/assets/js/media-field.js" defer></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+    </style>
 </head>

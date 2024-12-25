@@ -9,7 +9,6 @@ use App\Components\Fields\GroupField;
 use App\Components\Fields\ListField;
 use App\Components\Fields\BoolField;
 use App\Components\Fields\MediaField;
-use App\Enums\MediaMode;
 
 class FormBuilder
 {
@@ -104,7 +103,6 @@ class FormBuilder
                 $label,
                 $required,
                 $value,
-                $field['mode'] ?? MediaMode::SINGLE
             ),
             default => throw new \Exception("Unknown field type: {$type}")
         };

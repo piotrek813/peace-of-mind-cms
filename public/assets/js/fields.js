@@ -7,9 +7,7 @@ function initializeAllFields() {
     document.querySelectorAll('.collapseble-header').forEach(initializeHeader);
 
     // Initialize all list fields
-    document.querySelectorAll('.list-field').forEach((item)=>{
-initializeListField(item)
-    });
+    document.querySelectorAll('.list-field').forEach(initializeListField);
 }
 
 function initializeHeader(header) {
@@ -213,3 +211,4 @@ function initializeListItem(item) {
         }
     });
 } 
+

@@ -1,27 +1,7 @@
-<?php partial('head', ['includeFieldAssets' => true]); ?>
+<?php partial('head'); ?>
 <body class="bg-base-300 min-h-screen">
-    <!-- Navigation -->
-    <div class="navbar bg-base-200">
-        <div class="navbar-start">
-            <a href="/dashboard" class="btn btn-ghost text-xl text-primary">Dashboard</a>
-        </div>
-        <div class="navbar-end">
-            <div class="dropdown dropdown-end">
-                <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
-                    <div class="bg-primary text-primary-content rounded-full w-10">
-                        <span><?= substr($username, 0, 1) ?></span>
-                    </div>
-                </label>
-                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
-                    <li><a>Profile</a></li>
-                    <li><a>Settings</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <?php partial('navbar', ['username' => $username]); ?>
 
-    <!-- Main Content -->
     <div class="p-6">
         <div class="max-w-5xl mx-auto">
             <div class="flex justify-between items-center mb-6">
@@ -39,5 +19,25 @@
             </form>
         </div>
     </div>
+
+    <dialog id="media-modal" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl h-[90vh] p-0">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10">✕</button>
+            </form>
+            
+            <div class="p-4 bg-base-200 border-b border-base-300">
+                <h3 class="font-bold text-lg">Media Library</h3>
+            </div>
+            
+            <div class="p-4 overflow-y-auto max-h-[calc(90vh-4rem)]">
+                <?= $library ?>
+            </div>
+        </div>
+        
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
 </body>
 </html>

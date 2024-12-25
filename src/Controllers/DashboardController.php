@@ -6,6 +6,7 @@ use App\Controller;
 use App\Components\FormBuilder;
 use App\Services\SchemaService;
 use App\Models\Content;
+use App\Components\MediaLibrary;
 
 class DashboardController extends Controller
 {
@@ -39,7 +40,7 @@ class DashboardController extends Controller
             $data['entries'] = $entries;
         }
         
-        $this->render('dashboard/index', $data);
+        $this->render('dashboard/index', $data, 'dashboard');
     }
 
     public function editor($id = null)
@@ -48,6 +49,8 @@ class DashboardController extends Controller
         $username = $_SESSION['username'] ?? 'User';
         $schemas = $this->schemaService->getSchemas();
         $schema = $this->schemaService->getSchema($type);
+
+        $library = new MediaLibrary(true);
         
         $entry = null;
         
@@ -72,7 +75,8 @@ class DashboardController extends Controller
             'schemas' => $schemas,
             'form' => $form,
             'entry' => $entry,
-            'type' => $type
+            'type' => $type,
+            'library' => $library->render()
         ]);
     }
 

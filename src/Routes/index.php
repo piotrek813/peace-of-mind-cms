@@ -25,5 +25,7 @@ $router->get('/logout', AuthController::class, 'logout', [SessionMiddleware::cla
 $router->post('/delete-entry', DashboardController::class, 'deleteEntry', [SessionMiddleware::class, AuthMiddleware::class]);
 
 $router->get('/media-library', MediaController::class, 'index', [SessionMiddleware::class, AuthMiddleware::class]);
+$router->post('/media-library/upload', MediaController::class, 'upload', [SessionMiddleware::class, AuthMiddleware::class]);
+$router->delete('/media-library/{id}', MediaController::class, 'delete', [SessionMiddleware::class, AuthMiddleware::class]);
 
 $router->dispatch();
