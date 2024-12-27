@@ -16,7 +16,7 @@ class Media
         $originalName = $file['name'];
         $safeName = $this->generateSafeName($originalName);
         $path = $uploadDir . '/' . $safeName;
-        $url = '/uploads/' . date('Y/m') . '/' . $safeName;
+        $url = 'uploads/' . date('Y/m') . '/' . $safeName;
 
         if (move_uploaded_file($file['tmp_name'], $path)) {
             return $this->save($safeName, $file['type'], $file['size'], $url);

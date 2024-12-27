@@ -10,6 +10,7 @@ use App\Components\MediaLibrary;
 class MediaController extends Controller
 {
     private $media;
+    private $schemaService;
 
     public function __construct()
     {
