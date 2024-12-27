@@ -27,7 +27,7 @@ class Router
 
     public function dispatch()
     {
-        $uri = strtok($_SERVER['REQUEST_URI'], '?');
+        $uri = URL_PREFIX . strtok($_SERVER['REQUEST_URI'], '?');
         $method = $_SERVER['REQUEST_METHOD'];
 
 
