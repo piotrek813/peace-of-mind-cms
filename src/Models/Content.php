@@ -23,7 +23,7 @@ class Content
                 VALUES (:data, :created_at, :updated_at, :user_id, :type)";
         
         $stmt = $this->db->prepare($sql);
-        
+
         return $stmt->execute([
             'data' => $json_data,
             'created_at' => $now,

@@ -142,6 +142,8 @@ class DashboardController extends Controller
                 continue;
             }
             if (is_array($value)) {
+                $is_assoc = array_keys($value) !== range(0, count($value) - 1);
+                $value = !$is_assoc ? array_values($value) : $value;
                 $result[$key] = $this->processFormData($value);
             } else {
                 $result[$key] = $this->sanitizeValue($value);
