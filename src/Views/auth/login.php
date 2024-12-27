@@ -56,7 +56,7 @@
 
                 <div class="text-center mt-4 text-base-content/80">
                     Don't have an account? 
-                    <a href="/register" class="link link-primary">Register</a>
+                    <a href="register" class="link link-primary">Register</a>
                 </div>
             </form>
         </div>

@@ -12,7 +12,7 @@
 <?php else: ?>
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold"><?= htmlspecialchars($activeSchema['label']) ?> Entries</h1>
-        <a href="/editor?type=<?= htmlspecialchars($activeSchema['name']) ?>" class="btn btn-primary">
+        <a href="editor?type=<?= htmlspecialchars($activeSchema['name']) ?>" class="btn btn-primary">
             New <?= htmlspecialchars($activeSchema['label']) ?>
         </a>
     </div>
@@ -22,7 +22,7 @@
         <div class="text-center py-12">
             <h3 class="text-lg font-medium mb-2">No entries yet</h3>
             <p class="text-base-content/60 mb-4">Create your first <?= strtolower($activeSchema['label']) ?> to get started</p>
-            <a href="/editor?type=<?= htmlspecialchars($activeSchema['name']) ?>" class="btn btn-primary">
+            <a href="editor?type=<?= htmlspecialchars($activeSchema['name']) ?>" class="btn btn-primary">
                 Create <?= htmlspecialchars($activeSchema['label']) ?>
             </a>
         </div>
@@ -83,7 +83,7 @@
                             <td><?= htmlspecialchars(date('Y-m-d H:i', strtotime($entry['created_at']))) ?></td>
                             <td>
                                 <div class="flex gap-2">
-                                    <a href="/editor?type=<?= $activeSchema['name'] ?>&id=<?= $entry['id'] ?>" class="btn btn-ghost btn-xs">
+                                    <a href="editor?type=<?= $activeSchema['name'] ?>&id=<?= $entry['id'] ?>" class="btn btn-ghost btn-xs">
                                         Edit
                                     </a>
                                     <form method="POST" action="/delete-entry" class="inline">

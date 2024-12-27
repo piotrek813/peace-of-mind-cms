@@ -6,7 +6,7 @@
             <a class="btn btn-ghost text-xl text-primary">Peace of Mind</a>
         </div>
         <div class="navbar-end">
-            <a href="/login" class="btn btn-primary">Get Started</a>
+            <a href="login" class="btn btn-primary">Get Started</a>
         </div>
     </div>
 
@@ -19,7 +19,7 @@
                     Peace of Mind CMS - where content management meets tranquility. 
                     Built for creators who demand simplicity without sacrificing power.
                 </p>
-                <a href="/register" class="btn btn-primary btn-lg">Start Your Free Journey</a>
+                <a href="register" class="btn btn-primary btn-lg">Start Your Free Journey</a>
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@
         <div class="max-w-3xl mx-auto text-center px-4">
             <h2 class="text-3xl font-bold mb-6">Ready to Experience True Content Freedom?</h2>
             <p class="mb-8">Join thousands of content creators who have found their peace of mind.</p>
-            <a href="/register" class="btn btn-primary btn-lg">Get Started Today</a>
+            <a href="register" class="btn btn-primary btn-lg">Get Started Today</a>
         </div>
     </div>
 

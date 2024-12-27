@@ -56,7 +56,7 @@
 
                 <div class="text-center mt-4 text-base-content/80">
                     Already have an account? 
-                    <a href="/login" class="link link-primary">Login</a>
+                    <a href="login" class="link link-primary">Login</a>
                 </div>
             </form>
         </div>
