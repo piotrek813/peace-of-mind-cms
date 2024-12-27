@@ -9,8 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Field-specific assets -->
-    <link href="/assets/css/fields.css" rel="stylesheet" type="text/css" />
-    <script src="/assets/js/fields.js" defer></script>
+    <link href="public/assets/css/fields.css" rel="stylesheet" type="text/css" />
+    <script src="public/assets/js/fields.js" defer></script>
 
-    <script src="/assets/js/dashboard.js" defer></script>
+    <script src="public/assets/js/dashboard.js" defer></script>
 </head>

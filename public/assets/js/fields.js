@@ -7,7 +7,9 @@ function initializeAllFields() {
     document.querySelectorAll('.collapseble-header').forEach(initializeHeader);
 
     // Initialize all list fields
-    document.querySelectorAll('.list-field').forEach(initializeListField);
+    document.querySelectorAll('.list-field').forEach((item)=>{
+initializeListField(item)
+    });
 }
 
 function initializeHeader(header) {
@@ -91,19 +93,6 @@ function initializeListField(listField) {
         // Initialize the new item and any nested fields
         const addedItem = listItems.lastElementChild;
 
-        // Fill in the indexes in the name attribute for the new item
-        var a = addedItem.closest("[data-index]");
-        var indexes = [];
-        while (a ) {
-            indexes.push(a.dataset.index);
-            a = a.parentNode.closest("[data-index]");
-        }
-
-        indexes.reverse().forEach((index, _) => {
-            addedItem.querySelectorAll('[name]').forEach(el => {
-                el.name = el.name.replace("{{index}}", index);
-            });
-        });
 
         addedItem.querySelectorAll('.collapseble-header').forEach(initializeHeader);
         addedItem.querySelectorAll('.list-field').forEach(initializeListField);
@@ -148,6 +137,7 @@ function createFieldContent(listName, fieldKey, config) {
 }
 
 function initializeListItem(item) {
+    console.log(item);
     const deleteBtn = item.querySelector('.delete-item');
     deleteBtn.addEventListener('click', () => {
         item.remove();
@@ -157,6 +147,20 @@ function initializeListItem(item) {
     const header = item.querySelector('.list-item-header');
     const content = item.querySelector('.list-item-content');
     const icon = header.querySelector('.collapse-icon');
+
+        // Fill in the indexes in the name attribute for the new item
+    var a = item.closest("[data-index]");
+    var indexes = [];
+    while (a ) {
+        indexes.push(a.dataset.index);
+        a = a.parentNode.closest("[data-index]");
+    }
+
+    indexes.reverse().forEach((index, _) => {
+        item.querySelectorAll('[name]').forEach(el => {
+            el.name = el.name.replace("{{index}}", index);
+        });
+    }); 
     
     header.addEventListener('click', (e) => {
         // Don't collapse if clicking delete button

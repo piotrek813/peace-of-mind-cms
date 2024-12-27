@@ -8,6 +8,8 @@ use App\Components\Fields\TextareaField;
 use App\Components\Fields\GroupField;
 use App\Components\Fields\ListField;
 use App\Components\Fields\BoolField;
+use App\Components\Fields\MediaField;
+use App\Enums\MediaMode;
 
 class FormBuilder
 {
@@ -77,6 +79,7 @@ class FormBuilder
             'group' => new GroupField(
                 $name,
                 $label,
+                $required,
                 array_map(
                     fn($f, $key) => $this->createField(array_merge($f, [
                         'name' => $name . '[' . $key . ']',
@@ -85,25 +88,51 @@ class FormBuilder
                     $field['fields'],
                     array_keys($field['fields'])
                 ),
-                $required,
                 $nest_level
             ),
             'list' => new ListField(
                 $name,
                 $label,
-                $field["fields"],
                 $required,
-                $value ?? [],
+                $this->create_list_fields($value ?? [], $field, $name, $nest_level),
+                $field["fields"],
                 $this->createTemplateFieldsForList($field["fields"], $name, $value, $nest_level),
                 $nest_level,
+            ),
+            'media' => new MediaField(
+                $name,
+                $label,
+                $required,
+                $value,
+                $field['mode'] ?? MediaMode::SINGLE
             ),
             default => throw new \Exception("Unknown field type: {$type}")
         };
     }
 
-    private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): array
+    private function create_list_fields(array $value, array $field, string $name, int $nest_level): array
     {
         return array_map(
+            function($value) use ($name, $field, $nest_level) {
+                $key = array_keys($value)[0];
+                return $this->createField(
+                    array_merge(
+                        $field["fields"][$key],
+                        [
+                            'name' => $name . '[{{index}}][' . $key . ']',
+                            'value' => $value[$key]
+                        ],
+                    ),
+                    $nest_level + 1
+                );
+            },
+            $value
+        );
+    }
+
+    private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): string
+    {
+        return join("", array_map(
             function($field, $key) use ($name, $value, $nest_level) {
                 $fieldConfig = array_merge($field, [
                     'name' => $name . '[{{index}}][' . $key . ']',
@@ -121,6 +150,6 @@ class FormBuilder
             },
             $fields,
             array_keys($fields)
-        );
+        ));
     }
 } 
