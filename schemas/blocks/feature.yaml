@@ -1,0 +1,39 @@
+type: group
+name: features
+label: Features
+fields:
+  - type: select
+    name: style
+    label: Style
+    default: grid
+    options:
+      - label: Grid
+        value: grid
+      - label: Two Columns (tab)
+        value: two-columns-tab
+      - label: Grid (full width)
+        value: grid-full-width
+  - type: text
+    name: heading
+    label: Heading
+  - type: list
+    name: items
+    label: Items
+    fields:
+      - type: group
+        name: item 
+        label: Feature
+        fields:
+          - type: text
+            name: title
+            label: Title
+            required: true
+          - type: text
+            type: text
+            name: description
+            label: Description
+            required: true
+          - type: media
+            name: image
+            label: Image
+            required: true 

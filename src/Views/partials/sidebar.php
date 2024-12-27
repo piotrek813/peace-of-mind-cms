@@ -1,4 +1,4 @@
-<div class="w-64 bg-base-200 min-h-screen p-4">
+<div class="bg-base-200 min-h-screen p-4">
     <ul class="menu menu-vertical">
         <li class="menu-title">Content</li>
         <li>

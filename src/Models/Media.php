@@ -2,26 +2,24 @@
 
 namespace App\Models;
 
-use App\Model;
+use App\Database;
 
-class Media extends Model
+class Media
 {
-    protected static string $table = 'media';
-    
-    public function store($file): bool
+    public function store($file): int|bool
     {
-        $uploadDir = 'uploads/' . date('Y/m');
+        $uploadDir = BASE_PATH . '/uploads/' . date('Y/m');
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
         $originalName = $file['name'];
-        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
         $safeName = $this->generateSafeName($originalName);
         $path = $uploadDir . '/' . $safeName;
+        $url = '/uploads/' . date('Y/m') . '/' . $safeName;
 
         if (move_uploaded_file($file['tmp_name'], $path)) {
-            return $this->save();
+            return $this->save($safeName, $file['type'], $file['size'], $url);
         }
 
         return false;
@@ -37,27 +35,50 @@ class Media extends Model
         return $uniqueName . '.' . $extension;
     }
 
-    public function delete(): bool
+    public function delete(int $id): bool
     {
-        if (file_exists($this->path)) {
-            unlink($this->path);
+        $media = $this->getById($id);
+        if (file_exists(BASE_PATH . $media['url'])) {
+            unlink(BASE_PATH . $media['url']);
         }
-        
-        return parent::delete();
+
+        $db = Database::getInstance();
+        $sql = "DELETE FROM media WHERE id = ?";
+        $db->query($sql, [$id]);
+
+        return true;
     }
 
-    public static function createTable(): string
+    public function save(string $name, string $mimeType, int $size, string $url)
     {
-        return "CREATE TABLE IF NOT EXISTS media (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            original_name VARCHAR(255) NOT NULL,
-            mime_type VARCHAR(127) NOT NULL,
-            size INT NOT NULL,
-            path VARCHAR(255) NOT NULL,
-            url VARCHAR(255) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )";
+        $formattedSize = $this->formatSize($size);
+        
+        $db = Database::getInstance();
+        $sql = "INSERT INTO media (name, mime_type, size, formatted_size, url) VALUES (?, ?, ?, ?, ?)";
+        $db->query($sql, [$name, $mimeType, $size, $formattedSize, $url]);
+
+        return $db->lastInsertId();
+    }
+
+    private function formatSize(int $size): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $power = $size > 0 ? floor(log($size, 1024)) : 0;
+        
+        return number_format($size / pow(1024, $power), 2, '.', '') . ' ' . $units[$power];
+    }
+
+    public function getById(int $id)
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT * FROM media WHERE id = ? LIMIT 1";
+        return $db->query($sql, [$id])->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function findAll()
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT * FROM media";
+        return $db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
     }
 } 

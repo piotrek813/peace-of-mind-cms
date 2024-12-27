@@ -7,9 +7,7 @@ function initializeAllFields() {
     document.querySelectorAll('.collapseble-header').forEach(initializeHeader);
 
     // Initialize all list fields
-    document.querySelectorAll('.list-field').forEach((item)=>{
-initializeListField(item)
-    });
+    document.querySelectorAll('.list-field').forEach(initializeListField);
 }
 
 function initializeHeader(header) {
@@ -137,7 +135,6 @@ function createFieldContent(listName, fieldKey, config) {
 }
 
 function initializeListItem(item) {
-    console.log(item);
     const deleteBtn = item.querySelector('.delete-item');
     deleteBtn.addEventListener('click', () => {
         item.remove();
@@ -213,3 +210,4 @@ function initializeListItem(item) {
         }
     });
 } 
+

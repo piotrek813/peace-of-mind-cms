@@ -1,0 +1,20 @@
+label: Page
+name: page
+icon: document-text
+sidebar_position: 2
+
+fields:
+  - type: text
+    name: title
+    label: Title
+    value: Test
+  - blocks/seo
+  - type: list
+    name: content
+    label: Page Content
+    fields:
+      - blocks/hero
+      - blocks/feature
+      - blocks/recent-posts
+      - blocks/newsletter-cta
+      - blocks/introduction

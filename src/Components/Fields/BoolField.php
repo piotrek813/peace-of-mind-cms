@@ -7,18 +7,15 @@ class BoolField
     private string $name;
     public string $label;
     private bool $required;
-    private mixed $value;
+    private bool $value;
+    private string $input_name;
 
-    public function __construct(
-        string $name,
-        string $label,
-        bool $required = false,
-        mixed $value = null
-    ) {
-        $this->name = $name;
-        $this->label = $label;
-        $this->required = $required;
-        $this->value = $value;
+    public function __construct(array $field) {
+        $this->name = $field['name'];
+        $this->label = $field['label'];
+        $this->required = $field['required'];
+        $this->value = $field['value'];
+        $this->input_name = $field['input_name'];
     }
 
     public function render(): string
@@ -32,10 +29,13 @@ class BoolField
                 <label class="label cursor-pointer p-4">
                     <span class="label-text">{$this->label}</span>
                     <input type="hidden" 
-                           name="{$this->name}" 
+                           name="{$this->input_name}[name]" 
+                           value="{$this->name}">
+                    <input type="hidden" 
+                           name="{$this->input_name}[value]" 
                            value="0">
                     <input type="checkbox" 
-                           name="{$this->name}" 
+                           name="{$this->input_name}[value]" 
                            class="toggle"{$required}{$checked}
                            value="1">
                 </label>

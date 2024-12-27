@@ -11,16 +11,17 @@ class ListField
     private array $fields;
     private int $nest_level;
     private string $templates;
-
-    public function __construct(string $name, string $label, bool $required = false, array $value = [], array $fields = [], string $templates = '', int $nest_level = 0)
+    private string $input_name;
+    public function __construct(array $field, int $nest_level)
     {
-        $this->name = $name;
-        $this->label = $label;
-        $this->required = $required;
-        $this->value = $value;
-        $this->fields = $fields;
-        $this->templates = $templates;
+        $this->name = $field['name'];
+        $this->label = $field['label'];
+        $this->required = $field['required'];
+        $this->value = $field['fields'];
+        $this->fields = $field['fieldConfig'];
+        $this->templates = $field['templates'];
         $this->nest_level = $nest_level;
+        $this->input_name = $field['input_name'];
     }
 
     public function render(): string
@@ -88,8 +89,9 @@ class ListField
     private function renderFieldOptions(): string
     {
         $html = '';
+
         foreach ($this->fields as $key => $field) {
-            $label = $field->label ?? ucfirst($key);
+            $label = $field['label'] ?? ucfirst($key);
             $type = $this->getFieldType($field);
             $html .= <<<HTML
             <button type="button" 

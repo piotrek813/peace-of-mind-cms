@@ -9,147 +9,148 @@ use App\Components\Fields\GroupField;
 use App\Components\Fields\ListField;
 use App\Components\Fields\BoolField;
 use App\Components\Fields\MediaField;
-use App\Enums\MediaMode;
+use App\Components\Fields\StaticField;
+use App\Components\Fields\SelectField;
+use App\Services\SchemaService;
 
 class FormBuilder
 {
     private array $schema;
     private array $data;
+    private SchemaService $schemaService;
 
     public function __construct(array $schema, array $data = [])
     {
         $this->schema = $schema;
         $this->data = $data;
+        $this->schemaService = new SchemaService();
     }
 
     public function render(): string
     {
         $html = '';
-        foreach ($this->schema['fields'] as $name => $field) {
-            $field['name'] = $name;
-            $field['value'] = $this->getValue($name, $field);
+
+        foreach ($this->schema['fields'] as $field) {
+            $field['value'] = $this->getValue($field['name'], $field, $this->data);
             $html .= $this->createField($field)->render();
         }
 
         return $html;
     }
 
-    private function getValue(string $name, array $field): mixed
+    private function getValue(string $name, array $field, array $data): mixed
     {
         if (isset($field['fields'])) {
-            return $this->data[$name] ?? [];
+            return $data[$name] ?? [];
         }
-        return $this->data[$name] ?? ($field['default'] ?? null);
+
+        return $data[$name] ?? ($field['default'] ?? null);
+    }
+
+    private function getValueOrDefault(mixed $value, array $field): mixed
+    {
+        if (is_array($value) && isset($value['value'])) {
+            return $value['value'];
+        }
+        return $field['default'] ?? null;
     }
 
     private function createField(array $field, int $nest_level = 0): object
     {
-        $type = $field['type'];
-        $name = $field['name'];
-        $label = $field['label'];
-        $required = $field['required'] ?? false;
-        $value = $field['value'];
+        $field['required'] = $field['required'] ?? false;
 
-        return match ($type) {
-            'text' => new TextField(
-                $name,
-                $label,
-                $required,
-                $value
-            ),
-            'textarea' => new TextareaField(
-                $name,
-                $label,
-                $required,
-                $value
-            ),
-            'slug' => new SlugField(
-                $name,
-                $label,
-                $field['source'],
-                $required,
-                $value
-            ),
-            'bool' => new BoolField(
-                $name,
-                $label,
-                $required,
-                $value
-            ),
+        if (is_array($field) && isset($field['fields'])) {
+            foreach ($field['fields'] as $key => $f) {
+                if (is_string($f)) {
+                    $field["fields"][$key] = $this->schemaService->getBlockSchema($f);
+                }
+            }
+        }
+
+        if (isset($field['fields']) && $field['value'] === null) {
+            // TODO this should be done by shcemaservice
+            $field['value'] = [];
+        }
+
+        if (!isset($field['fields'])) {
+            $field = array_merge($field, [
+                'value' => $this->getValueOrDefault($field['value'], $field)
+            ]);
+        }
+
+        return match ($field['type']) {
+            'text' => new TextField($field),
+            'textarea' => new TextareaField($field),
+            'slug' => new SlugField($field), 
+            'bool' => new BoolField($field),
+            'media' => new MediaField($field),
+            'static' => new StaticField($field),
+            'select' => new SelectField($field),
             'group' => new GroupField(
-                $name,
-                $label,
-                $required,
-                array_map(
-                    fn($f, $key) => $this->createField(array_merge($f, [
-                        'name' => $name . '[' . $key . ']',
-                        'value' => $value[$key] ?? ($f['default'] ?? null)
-                    ]), $nest_level + 1), 
-                    $field['fields'],
-                    array_keys($field['fields'])
-                ),
-                $nest_level
+                array_merge($field, [
+                    'fields' => $this->create_group_fields($field, $nest_level)
+                ]), $nest_level
             ),
             'list' => new ListField(
-                $name,
-                $label,
-                $required,
-                $this->create_list_fields($value ?? [], $field, $name, $nest_level),
-                $field["fields"],
-                $this->createTemplateFieldsForList($field["fields"], $name, $value, $nest_level),
-                $nest_level,
+                array_merge($field, [
+                    'fields' => $this->create_list_fields($field, $nest_level),
+                    'fieldConfig' => $field["fields"],
+                    'templates' => $this->createTemplateFieldsForList($field, $nest_level),
+                ]), $nest_level
             ),
-            'media' => new MediaField(
-                $name,
-                $label,
-                $required,
-                $value,
-                $field['mode'] ?? MediaMode::SINGLE
-            ),
-            default => throw new \Exception("Unknown field type: {$type}")
+            default => throw new \Exception("Unknown field type: {$field['type']}")
         };
     }
 
-    private function create_list_fields(array $value, array $field, string $name, int $nest_level): array
+    private function create_group_fields(array $group_field, int $nest_level): array
     {
-        return array_map(
-            function($value) use ($name, $field, $nest_level) {
-                $key = array_keys($value)[0];
-                return $this->createField(
-                    array_merge(
-                        $field["fields"][$key],
-                        [
-                            'name' => $name . '[{{index}}][' . $key . ']',
-                            'value' => $value[$key]
-                        ],
-                    ),
-                    $nest_level + 1
-                );
-            },
-            $value
-        );
+        $fields = [];
+        foreach ($group_field['fields'] as $f) {
+            $fields[] = $this->createField(array_merge($f, [
+                'input_name' => $group_field["input_name"] . '[' . $f['name'] . ']',
+                'value' => $this->getValue($f['name'], $f, $group_field['value'])
+            ]), $nest_level + 1);
+        }
+        return $fields;
     }
 
-    private function createTemplateFieldsForList(array $fields, string $name, $value, int $nest_level): string
+    private function create_list_fields(array $list_field, int $nest_level): array
+    {
+        $fields = [];
+        foreach ($list_field['value'] as $value) {
+            foreach ($list_field['fields'] as $field) {
+                if ($field['name'] === $value['name']) {
+                    $fields[]= $this->createField(array_merge($field, [
+                        'input_name' => $list_field["input_name"] . '[{{index}}]',
+                        'value' => $value
+                    ]), $nest_level + 1);
+                }
+            }
+        }
+
+        return $fields;
+    }
+
+    private function createTemplateFieldsForList(array $list_field, int $nest_level): string
     {
         return join("", array_map(
-            function($field, $key) use ($name, $value, $nest_level) {
+            function($field, $key) use ($list_field, $nest_level) {
                 $fieldConfig = array_merge($field, [
-                    'name' => $name . '[{{index}}][' . $key . ']',
-                    'value' => $value[$key] ?? ($field['default'] ?? null)
+                    'input_name' => $list_field["input_name"] . '[{{index}}]',
+                    'value' => $this->getValue($field['name'], $field, $list_field['value'])
                 ]);
 
                 $renderedField = $this->createField($fieldConfig, $nest_level + 1);
                 
                 return sprintf(
                     '<template id="field-%s-%s-template">%s</template>',
-                    $name,
+                    $list_field['name'],
                     $key,
                     $renderedField->render()
                 );
             },
-            $fields,
-            array_keys($fields)
+            $list_field['fields'],
+            array_keys($list_field['fields'])
         ));
     }
 } 
