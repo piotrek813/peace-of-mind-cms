@@ -31,7 +31,7 @@ class AuthController extends Controller
             $password = trim($_POST['password'] ?? '');
 
             if (empty($username) || empty($password)) {
-                header('Location: /login?error=missing_fields');
+                header('Location: login?error=missing_fields');
                 exit;
             }
 
@@ -41,11 +41,11 @@ class AuthController extends Controller
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 
-                header('Location: /dashboard');
+                header('Location: dashboard');
                 exit;
             }
 
-            header('Location: /login?error=invalid_credentials');
+            header('Location: login?error=invalid_credentials');
             exit;
         }
     }
@@ -57,20 +57,20 @@ class AuthController extends Controller
             $password = trim($_POST['password'] ?? '');
 
             if (empty($username) || empty($password)) {
-                header('Location: /register?error=missing_fields');
+                header('Location: register?error=missing_fields');
                 exit;
             }
 
             if ($this->user->findByUsername($username)) {
-                header('Location: /register?error=username_exists');
+                header('Location: register?error=username_exists');
                 exit;
             }
 
             if ($this->user->create($username, $password)) {
-                header('Location: /login?success=registered');
+                header('Location: login?success=registered');
                 exit;
             } else {
-                header('Location: /register?error=registration_failed');
+                header('Location: register?error=registration_failed');
                 exit;
             }
         }
@@ -79,7 +79,7 @@ class AuthController extends Controller
     public function logout()
     {
         session_destroy();
-        header('Location: /login');
+        header('Location: login');
         exit;
     }
 } 

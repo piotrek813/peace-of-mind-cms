@@ -58,12 +58,12 @@ class DashboardController extends Controller
             $entry = $this->content->getById($_GET['id']);
 
             if (!$entry) {
-                header('Location: /dashboard?error=Entry not found');
+                header('Location: dashboard?error=Entry not found');
                 exit;
             }
 
             if ($entry['user_id'] != $_SESSION['user_id']) {
-                header('Location: /dashboard?error=Unauthorized');
+                header('Location: dashboard?error=Unauthorized');
                 exit;
             }
         }
@@ -83,7 +83,7 @@ class DashboardController extends Controller
     public function saveEntry()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /dashboard');
+            header('Location: dashboard');
             exit;
         }
 
@@ -104,16 +104,16 @@ class DashboardController extends Controller
             } else {
                 $this->content->create($data, $_SESSION['user_id'], $type);
             }
-            header('Location: /dashboard?type=' . urlencode($type) . '&success=Entry saved successfully');
+            header('Location: dashboard?type=' . urlencode($type) . '&success=Entry saved successfully');
         } catch (\Exception $e) {
-            header('Location: /editor?type=' . urlencode($type) . '&error=' . urlencode($e->getMessage()));
+            header('Location: editor?type=' . urlencode($type) . '&error=' . urlencode($e->getMessage()));
         }
     }
 
     public function deleteEntry()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /dashboard');
+            header('Location: dashboard');
             exit;
         }
 
@@ -127,9 +127,9 @@ class DashboardController extends Controller
             }
 
             $this->content->delete($id);
-            header('Location: /dashboard?type=' . urlencode($type) . '&success=Entry deleted successfully');
+            header('Location: dashboard?type=' . urlencode($type) . '&success=Entry deleted successfully');
         } catch (\Exception $e) {
-            header('Location: /dashboard?type=' . urlencode($type) . '&error=' . urlencode($e->getMessage()));
+            header('Location: dashboard?type=' . urlencode($type) . '&error=' . urlencode($e->getMessage()));
         }
     }
 
