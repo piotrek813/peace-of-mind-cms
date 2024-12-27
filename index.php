@@ -4,9 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 define('BASE_PATH', __DIR__);
-echo "<pre>";
-print_r($_SERVER);
-echo "</pre>";
+define('URL_PREFIX', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']));
 
 require './vendor/autoload.php';
 require_once './src/Helpers/view.php';

@@ -37,6 +37,7 @@ class Router
     public function dispatch()
     {
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
+        $uri = str_replace(URL_PREFIX, '', $uri);
         $method = $_SERVER['REQUEST_METHOD'];
 
         foreach ($this->routes[$method] ?? [] as $pattern => $route) {
