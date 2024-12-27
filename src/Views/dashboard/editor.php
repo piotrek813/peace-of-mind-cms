@@ -9,7 +9,7 @@
                 <button form="entry-form" type="submit" class="btn btn-primary">Save Entry</button>
             </div>
 
-            <form id="entry-form" method="POST" action="/editor" class="space-y-6">
+            <form id="entry-form" method="POST" action="editor" class="space-y-6">
                 <input type="hidden" name="type" value="<?= htmlspecialchars($type) ?>">
                 <?php if ($entry): ?>
                     <input type="hidden" name="id" value="<?= htmlspecialchars($entry['id']) ?>">

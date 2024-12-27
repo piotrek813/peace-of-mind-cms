@@ -29,7 +29,7 @@
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="/login" class="space-y-4">
+            <form method="POST" action="login" class="space-y-4">
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">Username</span>

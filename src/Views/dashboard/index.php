@@ -86,7 +86,7 @@
                                     <a href="editor?type=<?= $activeSchema['name'] ?>&id=<?= $entry['id'] ?>" class="btn btn-ghost btn-xs">
                                         Edit
                                     </a>
-                                    <form method="POST" action="/delete-entry" class="inline">
+                                    <form method="POST" action="delete-entry" class="inline">
                                         <input type="hidden" name="id" value="<?= $entry['id'] ?>">
                                         <input type="hidden" name="type" value="<?= $activeSchema['name'] ?>">
                                         <button type="submit" class="btn btn-ghost btn-xs text-error" 

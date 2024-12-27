@@ -2,8 +2,6 @@ function openMediaModal(field) {
     const modal = document.getElementById('media-modal');
     const input = Array.from(field.closest('.media-field').querySelectorAll('input')).find(input => input.name.includes('[value]'));
 
-    console.log(input);
-
     modal.dataset.field = input.name;
     modal.addEventListener('close', function() {
         const selected = JSON.parse(input.value);
@@ -32,12 +30,12 @@ function removeMedia(button, event) {
     const mediaItem = button.closest('.relative');
     const preview = mediaItem.parentElement;
     const input = preview.closest('.form-control').querySelector('input[type="hidden"]');
-    
+
     const currentValue = JSON.parse(input.value || '[]');
     const index = Array.from(preview.children).indexOf(mediaItem);
-    
+
     currentValue.splice(index, 1);
     input.value = JSON.stringify(currentValue);
-    
+
     mediaItem.remove();
 }

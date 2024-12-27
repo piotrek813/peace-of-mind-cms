@@ -47,7 +47,7 @@ function copyUrl() {
     const url = document.querySelector('.media-item:has(input:checked)').querySelector('img').src;
     document.querySelector('.media-item > input:checked').checked = false;
     navigator.clipboard.writeText(url).then(() => {
-        
+
     });
 }
 
@@ -71,11 +71,11 @@ function downloadMedia() {
     });
 }
 
-async function uploadMedia()  {
+async function uploadMedia() {
     hideSelectionActions();
     const formData = new FormData(document.getElementById('upload-media').closest('form'));
 
-    const response = await fetch('/media-library/upload', {
+    const response = await fetch('media-library/upload', {
         method: 'POST',
         body: formData,
     });
@@ -86,13 +86,13 @@ async function uploadMedia()  {
             const mediaGrid = document.getElementById('media-grid');
             const mediaItem = document.getElementById('media-item-template')
                 .content.cloneNode(true);
-            
+
             mediaItem.firstElementChild.outerHTML = mediaItem.firstElementChild.outerHTML
                 .replaceAll(/{{id}}/g, media.id)
                 .replaceAll(/{{url}}/g, media.url)
                 .replaceAll(/{{name}}/g, media.name)
                 .replaceAll(/{{formattedSize}}/g, media.formatted_size);
-                
+
             mediaGrid.appendChild(mediaItem);
             document.getElementById('no-media-message').style.display = 'none';
         }
