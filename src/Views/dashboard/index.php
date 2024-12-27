@@ -53,6 +53,11 @@
                         <tr>
                             <?php foreach (array_keys($headers) as $header): 
                                 $value = $data[$header] ?? '';
+
+                                if (is_array($value) && isset($value['value'])) {
+                                    $value = $value['value'];
+                                }
+
                             ?>
                                 <?php if (is_array($value)): ?>
                                     <td>
