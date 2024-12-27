@@ -35,7 +35,7 @@ class DashboardController extends Controller
         if ($type) {
             $schema = $this->schemaService->getSchema($type);
             $entries = $this->content->getByType($type, $_SESSION['user_id']);
-            
+
             $data['activeSchema'] = $schema;
             $data['entries'] = $entries;
         }
@@ -93,7 +93,6 @@ class DashboardController extends Controller
 
         // Remove technical fields from data
         unset($data['id']);
-        unset($data['type']);
 
         try {
             if ($id) {

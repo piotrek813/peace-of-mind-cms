@@ -1,0 +1,14 @@
+type: group
+name: newsletter-cta
+label: Newsletter Cta
+fields:
+  - type: text
+    name: heading
+    label: Heading
+    required: true
+    default: Co w trawie piszczy?
+  - type: text
+    name: tagline
+    label: Tagline
+    required: true
+    default: Jeśli chcesz być na bierząco z nowościami, pomyśl o dołączeniu do newslettera

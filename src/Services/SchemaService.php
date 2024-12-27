@@ -15,7 +15,7 @@ class SchemaService
     {
         $schemas = [];
         $files = glob($this->schemaPath . '*.yaml');
-        
+
         foreach ($files as $file) {
             $name = basename($file, '.yaml');
             $schema = yaml_parse_file($file);
@@ -45,6 +45,25 @@ class SchemaService
 
         $schema = yaml_parse_file($schemaFile);
 
+        foreach ($schema['fields'] as $key => $f) {
+            if (is_string($f)) {
+                $schema['fields'][$key] = $this->getBlockSchema($f);
+            } else {
+                $schema['fields'][$key]['input_name'] = $f['name'];
+            }
+        }
+
         return $schema;
+    }
+
+    public function getBlockSchema(string $type): ?array
+    {
+        $blockPath = 'schemas/' . $type . '.yaml';
+        if (!file_exists($blockPath)) {
+            return null;
+        }
+
+        $schema = yaml_parse_file($blockPath);
+        return array_merge($schema, ['input_name' => $schema['name']]);
     }
 } 

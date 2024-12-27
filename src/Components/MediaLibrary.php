@@ -20,12 +20,12 @@ class MediaLibrary
     public function render(): string
     {
         $mediaFiles = $this->media->findAll();
-        
-        return <<<HTML
-            <div class="media-library">
+
+        $html = <<<HTML
+            <div class="media-library flex flex-col relative h-[90vh]">
                 {$this->renderHeader()}
 
-                <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div id="media-grid" class="overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {$this->renderMediaItems($mediaFiles)}
                 </div>
 
@@ -36,6 +36,18 @@ class MediaLibrary
                 {$this->renderNoMediaMessage($mediaFiles)}
             </div>
         HTML;
+
+        if ($this->isModal) {
+            $html = <<<HTML
+                <dialog id="media-modal" class="modal">
+                    <div class="modal-box w-11/12 max-w-5xl h-[90vh] p-0">
+                        {$html}
+                    </div>
+                </dialog>
+            HTML;
+        }
+
+        return $html;
     }
 
     private function renderHeader(): string
@@ -45,44 +57,70 @@ class MediaLibrary
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                                     </svg>
-                                    Select
+                                    <span class="hidden sm:inline">Select</span>
                                 </button> 
         HTML : '';
 
+        $closeButton = $this->isModal ? <<<HTML
+                        <form method="dialog">
+                            <button class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Close
+                            </button>
+                        </form>
+        HTML : '';
+
         return <<<HTML
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <div id="selection-actions" class="flex flex-wrap gap-2 w-full sm:w-auto" style="display: none;">
-                        <button id="delete-selected" class="btn btn-error btn-sm flex-grow sm:flex-grow-0" onclick="deleteMedia()">
-                            Delete Selected
-                        </button>
-                        <button id="clear-selection" class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0" onclick="clearSelection()">
-                            Clear Selection
-                        </button>
-                        <button id="copy-url" class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0" onclick="copyUrl()">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-                                <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
-                            </svg>
-                            Copy URL
-                        </button>
-                        <button id="download-action" class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0" onclick="downloadMedia()">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            Download
-                        </button>
-                        {$selectButton}
+                <div class="p-4 flex items-center justify-between w-full border-b border-gray-200/10 pb-4 mb-6">
+                    <h1 class="max-sm:hidden text-2xl font-bold">Media Library</h1>
+
+                    <div class="flex gap-2 items-center max-sm:w-full max-sm:justify-between">
+                        {$closeButton}
+                        <form>
+                            <label for="upload-media" class="btn btn-sm btn-primary flex-grow sm:flex-grow-0 hover:shadow-lg transition-shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                Upload Media
+                            </label>
+                            <input type="file" id="upload-media" class="hidden" name="files[]" multiple accept="image/*" onchange="uploadMedia()">
+                        </form>
                     </div>
-                    <label for="upload-media" class="btn btn-primary flex-grow sm:flex-grow-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                        Upload Media
-                    </label>
-                    <input type="file" id="upload-media" class="hidden" multiple accept="image/*" onchange="uploadMedia()">
                 </div>
-            </div>
+
+                <div id="selection-actions" class="absolute bottom-4 min-w-[357px] self-center z-50 flex gap-2 w-fit mx-auto bg-base-100 p-4 rounded-lg shadow-xl" style="display: none;">
+                        <button id="delete-selected" class="btn btn-error btn-sm flex-grow sm:flex-grow-0" onclick="deleteMedia()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="hidden sm:inline">Delete Selected</span>
+                    </button>
+                    <button id="copy-url" class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0" onclick="copyUrl()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                        </svg>
+                        <span class="sm:inline hidden">Copy URL</span>
+                    </button>
+                    <button id="download-action" class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0" onclick="downloadMedia()">
+                        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                            <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+                            <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+                        </svg>
+
+                        <span class="hidden sm:inline">Download</span>
+                    </button>
+
+                    {$selectButton}
+
+                    <button id="clear-selection" class="btn btn-ghost btn-sm flex-grow sm:flex-grow-0" onclick="clearSelection()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                    </button>
+                </div>
         HTML;
     }
 

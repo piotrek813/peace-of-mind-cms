@@ -1,0 +1,13 @@
+type: group
+name: seo
+label: SEO
+fields:
+  - type: text
+    name: title
+    label: Title
+  - type: text
+    name: description
+    label: Description
+  - type: text
+    name: slug
+    label: Slug

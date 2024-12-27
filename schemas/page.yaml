@@ -4,36 +4,17 @@ icon: document-text
 sidebar_position: 2
 
 fields:
-  title:
-    type: text
+  - type: text
     name: title
-    label: Page Title
-    required: true
-  slug:
-    type: text
-    name: slug
-    label: Page Slug
-    required: true
-  content:
-    type: list
+    label: Title
+    value: Test
+  - blocks/seo
+  - type: list
     name: content
     label: Page Content
     fields:
-      type:
-        type: group
-        name: service 
-        label: Co oferujemy
-        fields:
-          title:
-            type: text
-            name: title
-            label: Title
-          description:
-            type: text
-            name: description
-            label: Description
-          image:
-            type: media
-            name: image
-            label: Image
-            required: true
+      - blocks/hero
+      - blocks/feature
+      - blocks/recent-posts
+      - blocks/newsletter-cta
+      - blocks/introduction

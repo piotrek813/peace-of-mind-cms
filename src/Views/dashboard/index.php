@@ -17,6 +17,7 @@
         </a>
     </div>
 
+
     <?php if (empty($entries)): ?>
         <div class="text-center py-12">
             <h3 class="text-lg font-medium mb-2">No entries yet</h3>
@@ -26,12 +27,17 @@
             </a>
         </div>
     <?php else: ?>
+
         <div class="overflow-x-auto">
             <table class="table bg-base-200">
                 <thead>
                     <tr>
                         <?php 
-                        $headers = array_map(fn($f) => $f['label'], $activeSchema['fields']);
+                        $headers = array_reduce($activeSchema['fields'], function($acc, $f) {
+                            $acc[$f['name']] = $f['label'];
+                            return $acc; 
+                        }, array());
+
                         foreach (array_values($headers) as $column): 
                         ?>
                             <th><?= htmlspecialchars(ucwords(str_replace('_', ' ', $column))) ?></th>

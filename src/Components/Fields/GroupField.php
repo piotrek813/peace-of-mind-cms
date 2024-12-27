@@ -9,14 +9,16 @@ class GroupField
     private bool $required;
     private array $fields;
     private int $nest_level;
+    private string $input_name;
 
-    public function __construct(string $name, string $label, bool $required, array $fields, int $nest_level = 0)
+    public function __construct(array $field, int $nest_level)
     {
-        $this->name = $name;
-        $this->label = $label;
-        $this->required = $required;
-        $this->fields = $fields;
+        $this->name = $field['name'];
+        $this->label = $field['label'];
+        $this->required = $field['required'];
+        $this->fields = $field['fields'];
         $this->nest_level = $nest_level;
+        $this->input_name = $field['input_name'];
     }
 
     public function render(): string
@@ -25,6 +27,7 @@ class GroupField
 
         return <<<HTML
         <div class="form-control {$background} rounded-lg">
+                <input type="hidden" name="{$this->input_name}[name]" value="{$this->name}">
                 <div class="collapseble-header border-b border-base-300 flex items-center justify-between p-4 cursor-pointer">
                     <span class="font-medium">{$this->label}</span>
                     <svg class="collapse-icon w-5 h-5 transition-transform duration-200" 

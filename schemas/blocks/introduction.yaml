@@ -1,0 +1,16 @@
+type: group
+name: introduction
+label: Introduction
+fields:
+  - type: text
+    name: heading
+    label: Heading
+    required: true
+  - type: text
+    name: tagline
+    label: Tagline
+    required: true
+  - type: media
+    name: image
+    label: Image
+    required: true

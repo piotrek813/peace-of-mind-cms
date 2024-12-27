@@ -1,0 +1,27 @@
+type: group
+name: hero
+label: Hero
+fields:
+  - type: text
+    name: heading
+    label: Heading
+    required: true
+  - type: text
+    name: tagline
+    label: Tagline
+    required: true
+  - type: media
+    name: background
+    label: Background
+  - type: group
+    name: cta
+    label: Cta
+    fields:
+      - type: text
+        name: label
+        label: Label
+        required: true
+      - type: text
+        name: url
+        label: Url
+        required: true

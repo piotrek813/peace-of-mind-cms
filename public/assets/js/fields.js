@@ -135,7 +135,6 @@ function createFieldContent(listName, fieldKey, config) {
 }
 
 function initializeListItem(item) {
-    console.log(item);
     const deleteBtn = item.querySelector('.delete-item');
     deleteBtn.addEventListener('click', () => {
         item.remove();

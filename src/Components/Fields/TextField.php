@@ -7,14 +7,16 @@ class TextField
     protected string $name;
     public string $label;
     protected bool $required;
-    protected ?string $value;
+    protected string $value;
+    protected string $input_name;
 
-    public function __construct(string $name, string $label, bool $required = false, ?string $value = null)
+    public function __construct(array $field)
     {
-        $this->name = $name;
-        $this->label = $label;
-        $this->required = $required;
-        $this->value = $value;
+        $this->name = $field['name'];
+        $this->label = $field['label'];
+        $this->required = $field['required'];
+        $this->value = $field['value'] ?? '';
+        $this->input_name = $field['input_name'];
     }
 
     public function render(): string
@@ -23,11 +25,12 @@ class TextField
         
         return <<<HTML
         <div class="form-control">
-            <label class="label">
+            <input type="hidden" name="{$this->input_name}[name]" value="{$this->name}">
+            <label class="label" for="{$this->input_name}">
                 <span class="label-text">{$this->label}</span>
             </label>
             <input type="text" 
-                   name="{$this->name}" 
+                   name="{$this->input_name}[value]" 
                    class="input input-bordered bg-base-100" 
                    value="{$this->value}"
                    $required />

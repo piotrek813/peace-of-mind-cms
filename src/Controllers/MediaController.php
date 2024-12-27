@@ -26,21 +26,34 @@ class MediaController extends Controller
         $this->render('media-library/index', [
             "schemas" => $schemas,
             "library" => $library->render(),
-            "username" => $_SESSION['username']
+            "username" => $_SESSION['username'],
+            "no_padding" => true,
         ], "dashboard");
     }
 
     public function upload()
     {
         try {
-            $file = $_FILES['file'];
+            $files = $_FILES["files"];
 
             $media = new Media();
-            $id = $media->store($file);
+            $response = [];
+            
+            for ($i = 0; $i < count($files["name"]); $i++) {
+                $file = [
+                    "name" => $files["name"][$i],
+                    "type" => $files["type"][$i],
+                    "tmp_name" => $files["tmp_name"][$i],
+                    "error" => $files["error"][$i],
+                    "size" => $files["size"][$i],
+                ];
+                $id = $media->store($file);
+                $response[] = $media->getById($id);
+            }
             
             return $this->json([
                 'success' => true,
-                'media' => $media->getById($id),
+                'media' => $response,
             ]);
         } catch (\Exception $e) {
             return $this->json([

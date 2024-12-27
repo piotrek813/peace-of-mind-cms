@@ -17,27 +17,9 @@
 
                 <?= $form->render() ?>
             </form>
+
+            <?= $library ?>
         </div>
     </div>
-
-    <dialog id="media-modal" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl h-[90vh] p-0">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10">✕</button>
-            </form>
-            
-            <div class="p-4 bg-base-200 border-b border-base-300">
-                <h3 class="font-bold text-lg">Media Library</h3>
-            </div>
-            
-            <div class="p-4 overflow-y-auto max-h-[calc(90vh-4rem)]">
-                <?= $library ?>
-            </div>
-        </div>
-        
-        <form method="dialog" class="modal-backdrop">
-            <button>close</button>
-        </form>
-    </dialog>
 </body>
 </html>

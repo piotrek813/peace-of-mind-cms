@@ -1,6 +1,8 @@
 function openMediaModal(field) {
     const modal = document.getElementById('media-modal');
-    const input = field.closest('.media-field').querySelector('input');
+    const input = Array.from(field.closest('.media-field').querySelectorAll('input')).find(input => input.name.includes('[value]'));
+
+    console.log(input);
 
     modal.dataset.field = input.name;
     modal.addEventListener('close', function() {

@@ -8,17 +8,14 @@ class MediaField
     private string $label;
     private bool $required;
     private string $value;
+    private string $input_name;
 
-    public function __construct(
-        string $name,
-        string $label,
-        bool $required = false,
-        string|null $value = null,
-    ) {
-        $this->name = $name;
-        $this->label = $label;
-        $this->required = $required;
-        $this->value = htmlspecialchars_decode($value ?? '[]');
+    public function __construct(array $field) {
+        $this->name = $field['name'];
+        $this->label = $field['label'];
+        $this->required = $field['required'];
+        $this->value = htmlspecialchars_decode($field['value'] ?? '[]');
+        $this->input_name = $field['input_name'];
     }
 
     public function render(): string
@@ -31,14 +28,14 @@ class MediaField
 
         return <<<HTML
             <div class="form-control w-full media-field">
-                <label class="label" for="{$this->name}">
+                <label class="label" for="{$this->input_name}">
                     <span class="label-text">{$this->label}</span>
                 </label>
                 
                 <div class="card bg-base-200 p-4">
+                    <input type="hidden" name="{$this->input_name}[name]" value="{$this->name}">
                     <input type="hidden" 
-                           id="{$this->name}"
-                           name="{$this->name}" 
+                           name="{$this->input_name}[value]" 
                            value="{$this->value}" 
                            {$required}>
                     

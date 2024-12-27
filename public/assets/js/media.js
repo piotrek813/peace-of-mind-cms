@@ -73,27 +73,29 @@ function downloadMedia() {
 
 async function uploadMedia()  {
     hideSelectionActions();
-    const formData = new FormData();
-    formData.append('file', document.getElementById('upload-media').files[0]);
+    const formData = new FormData(document.getElementById('upload-media').closest('form'));
+
     const response = await fetch('/media-library/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
     });
 
     const data = await response.json();
     if (data.success) {
-        const mediaGrid = document.getElementById('media-grid');
-        const mediaItem = document.getElementById('media-item-template')
-            .content.cloneNode(true);
-        
-        mediaItem.firstElementChild.outerHTML = mediaItem.firstElementChild.outerHTML
-            .replaceAll(/{{id}}/g, data.media.id)
-            .replaceAll(/{{url}}/g, data.media.url)
-            .replaceAll(/{{name}}/g, data.media.name)
-            .replaceAll(/{{formattedSize}}/g, data.media.formatted_size);
+        for (const media of data.media) {
+            const mediaGrid = document.getElementById('media-grid');
+            const mediaItem = document.getElementById('media-item-template')
+                .content.cloneNode(true);
             
-        mediaGrid.appendChild(mediaItem);
-        document.getElementById('no-media-message').style.display = 'none';
+            mediaItem.firstElementChild.outerHTML = mediaItem.firstElementChild.outerHTML
+                .replaceAll(/{{id}}/g, media.id)
+                .replaceAll(/{{url}}/g, media.url)
+                .replaceAll(/{{name}}/g, media.name)
+                .replaceAll(/{{formattedSize}}/g, media.formatted_size);
+                
+            mediaGrid.appendChild(mediaItem);
+            document.getElementById('no-media-message').style.display = 'none';
+        }
     }
 }
 

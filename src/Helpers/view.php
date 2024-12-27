@@ -14,7 +14,7 @@ function partial(string $name, array $options = []): void
 }
 
 function layout(string $name, array $options = [], string $child = "", array $slots = []): void {
-    $basePath = __DIR__ . '/../Views/layouts/';
+    $basePath = BASE_PATH . '/src/Views/layouts/';
     $filePath = $basePath . $name . '.php';
     
     if (!file_exists($filePath)) {

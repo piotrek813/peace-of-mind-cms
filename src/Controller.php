@@ -4,12 +4,12 @@ namespace App;
 
 class Controller
 {
-    protected function render($view, $data = [], $layout = "")
+    protected function render($view, $data = [], $layout = "", $layout_data = [])
     {
         extract($data);
 
         if (!empty($layout)) {
-            layout($layout, $data, "Views/$view.php");
+            layout($layout, $data, "Views/$view.php", $layout_data);
         } else {
             include "Views/$view.php";
         }
