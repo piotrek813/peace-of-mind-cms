@@ -34,6 +34,8 @@ class MediaLibrary
                 </template>
 
                 {$this->renderNoMediaMessage($mediaFiles)}
+
+                {$this->renderImagePreviewModal()}
             </div>
         HTML;
 
@@ -134,15 +136,15 @@ class MediaLibrary
 
         return <<<HTML
             <label>
-                <div id="{$elementId}" class="card bg-base-100 shadow-sm group media-item relative overflow-hidden [&:has(input:checked)]:border-2 [&:has(input:checked)]:border-primary" data-id="{$id}">
-                    <input type="checkbox" class="hidden" onchange="handleSelection()"/>
+                <div id="{$elementId}" class="p-2 hover:bg-base-content/10 rounded-sm media-item relative overflow-hidden [&:has(input:checked)]:bg-base-content/10 [&:has(input:checked)]:border-2 [&:has(input:checked)]:border-primary" data-id="{$id}">
                     <figure class="aspect-square">
                         <img src={$url} alt={$name}
-                                class="w-full h-full object-cover">
+                                class="w-full h-full object-cover rounded-sm" onclick="openImagePreview(event, this)">
                     </figure>
-                    <div class="card-body p-3">
+                    <div class="py-4 flex gap-2 flex-row justify-between">
+                        <input type="checkbox"  onchange="handleSelection()"/>
                         <h3 class="card-title text-sm truncate">{$name}</h3>
-                        <p class="text-xs text-base-content/70">{$formattedSize}</p>
+                        <!-- <p class="text-xs text-base-content/70">{$formattedSize}</p> -->
                     </div>
                 </div>
             </label>
@@ -172,6 +174,31 @@ class MediaLibrary
                 <p class="text-lg font-medium mb-2">No media files yet</p>
                 <p>Upload some files to get started</p>
             </div>
+        HTML;
+    }
+
+    function renderImagePreviewModal(): string
+    {
+        return <<<HTML
+            <dialog id="image-preview-modal" class="modal p-8">
+                <div class="modal-box w-fit max-w-5xl max-h-[90vh] p-0 relative">
+                    <button class="btn btn-sm btn-circle absolute right-2 top-2" onclick="this.closest('dialog').close()">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                        <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                    <img src="" alt="" />
+                </div>
+            </dialog>
         HTML;
     }
 } 

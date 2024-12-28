@@ -20,6 +20,13 @@ function handleSelection() {
     }
 }
 
+function openImagePreview(event, image) {
+    event.preventDefault();
+    const modal = document.getElementById('image-preview-modal');
+    modal.querySelector('img').src = image.src;
+    modal.showModal();
+}
+
 function selectMedia() {
     const modal = document.getElementById('media-modal');
 
@@ -39,7 +46,7 @@ function selectMedia() {
 }
 
 function clearSelection() {
-    Array.from(document.querySelectorAll('.media-item > input')).map(e => {
+    Array.from(document.querySelectorAll('.media-item input')).map(e => {
         e.checked = false;
     });
 
@@ -49,7 +56,7 @@ function clearSelection() {
 function copyUrl() {
     hideSelectionActions();
     const url = document.querySelector('.media-item:has(input:checked)').querySelector('img').src;
-    document.querySelector('.media-item > input:checked').checked = false;
+    document.querySelector('.media-item input:checked').checked = false;
     navigator.clipboard.writeText(url).then(() => {
 
     });
