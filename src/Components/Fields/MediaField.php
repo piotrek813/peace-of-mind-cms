@@ -56,7 +56,7 @@ class MediaField
                         {$preview}
                     </div>
 
-                    <template id="media-preview-template">
+                    <template class="media-preview-template">
                         {$this->renderPreview()}
                     </template>
                     
