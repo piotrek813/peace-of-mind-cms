@@ -133,6 +133,28 @@ class DashboardController extends Controller
         }
     }
 
+    public function saveJson()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->json(['error' => 'Method not allowed'], 405);
+            return;
+        }
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        try {
+            $entry = $this->content->getById($data['id']);
+            if (!$entry || $entry['user_id'] != $_SESSION['user_id']) {
+                throw new \Exception('Unauthorized');
+            }
+
+            $this->content->update($data['id'], $data['data'], $data['type']);
+            $this->json(['success' => true]);
+        } catch (\Exception $e) {
+            $this->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
     private function processFormData(array $data): array
     {
         $result = [];

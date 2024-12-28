@@ -24,6 +24,7 @@ $router->get('/editor', DashboardController::class, 'editor', [SessionMiddleware
 $router->post('/editor', DashboardController::class, 'saveEntry', [SessionMiddleware::class, AuthMiddleware::class]);
 $router->get('/logout', AuthController::class, 'logout', [SessionMiddleware::class, AuthMiddleware::class]);
 $router->post('/delete-entry', DashboardController::class, 'deleteEntry', [SessionMiddleware::class, AuthMiddleware::class]);
+$router->post('/save-json', DashboardController::class, 'saveJson', [SessionMiddleware::class, AuthMiddleware::class]);
 
 $router->get('/media-library', MediaController::class, 'index', [SessionMiddleware::class, AuthMiddleware::class]);
 $router->post('/media-library/upload', MediaController::class, 'upload', [SessionMiddleware::class, AuthMiddleware::class]);

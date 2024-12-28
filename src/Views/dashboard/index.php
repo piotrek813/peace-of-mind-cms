@@ -91,6 +91,13 @@
                                     <a href="editor?type=<?= $activeSchema['name'] ?>&id=<?= $entry['id'] ?>" class="btn btn-ghost btn-xs">
                                         Edit
                                     </a>
+                                    <button onclick="openJsonEditor(this)" 
+                                            class="btn btn-ghost btn-xs"
+                                            data-entry-id="<?= $entry['id'] ?>"
+                                            data-type="<?= $activeSchema['name'] ?>"
+                                            data-json='<?= htmlspecialchars(json_encode(json_decode($entry['data'], true)), ENT_QUOTES, 'UTF-8') ?>'>
+                                        Edit JSON
+                                    </button>
                                     <form method="POST" action="delete-entry" class="inline">
                                         <input type="hidden" name="id" value="<?= $entry['id'] ?>">
                                         <input type="hidden" name="type" value="<?= $activeSchema['name'] ?>">
@@ -108,3 +115,25 @@
         </div>
     <?php endif; ?>
 <?php endif; ?>
+
+<dialog id="json-editor-modal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-lg">Edit JSON</h3>
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost">✕</button>
+            </form>
+        </div>
+        <div class="form-control">
+            <textarea id="json-editor" 
+                     class="textarea textarea-bordered font-mono text-sm h-[60vh] bg-base-100"
+                     spellcheck="false"></textarea>
+        </div>
+        <div class="modal-action">
+            <button onclick="saveJson()" class="btn btn-primary">Save Changes</button>
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+        </div>
+    </div>
+</dialog>
