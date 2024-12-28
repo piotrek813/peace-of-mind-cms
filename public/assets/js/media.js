@@ -86,7 +86,7 @@ async function uploadMedia() {
     hideSelectionActions();
     const formData = new FormData(document.getElementById('upload-media').closest('form'));
 
-    const response = await fetch('media-library/upload', {
+    const response = await fetch(BASE_URL + '/media-library/upload', {
         method: 'POST',
         body: formData,
     });
@@ -117,7 +117,7 @@ async function deleteMedia() {
             e.querySelector('input:checked').checked = false;
             const id = e.dataset.id;
             try {
-                const response = await fetch(`/media-library/${id}`, {
+                const response = await fetch(BASE_URL + `/media-library/${id}`, {
                     method: 'DELETE'
                 });
 

@@ -16,6 +16,10 @@
     <script src="public/assets/js/media.js" defer></script>
     <script src="public/assets/js/media-field.js" defer></script>
 
+    <script>
+        const BASE_URL = "<?php echo BASE_URL; ?>";
+    </script>
+
     <style>
         * {
             box-sizing: border-box;
