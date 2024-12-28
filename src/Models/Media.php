@@ -75,6 +75,12 @@ class Media
         return $db->query($sql, [$id])->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function getUrlById(int $id)
+    {
+        $media = $this->getById($id);
+        return $media['url'] ?? "";
+    }
+
     public function findAll()
     {
         $db = Database::getInstance();

@@ -2,20 +2,34 @@
 
 namespace App\Components\Fields;
 
+use App\Models\Media;
+
 class MediaField
 {
     private string $name;
     private string $label;
     private bool $required;
-    private string $value;
+    private array $value;
     private string $input_name;
-
+    private bool $multi;
+    private Media $media;
     public function __construct(array $field) {
+        $this->media = new Media();
+
         $this->name = $field['name'];
         $this->label = $field['label'];
         $this->required = $field['required'];
-        $this->value = htmlspecialchars_decode($field['value'] ?? '[]');
+
+        if (is_array($field['value'])) {
+            $this->value = $field['value'];
+        } else if (is_numeric($field['value'])) {
+            $this->value = [$field['value']];
+        } else {
+            $this->value = [];
+        }
+
         $this->input_name = $field['input_name'];
+        $this->multi = $field['multi'] ?? false;
     }
 
     public function render(): string
@@ -23,22 +37,21 @@ class MediaField
         $required = $this->required ? 'required' : '';
 
         $preview = join("", array_map(function($item) {
-            return $this->renderPreview($item['url'], $item['name']);
-        }, json_decode($this->value, true)));
+            $item = $this->media->getById($item);
+            return $this->renderPreview($item['url'], $item['name'], $item['id']);
+        }, $this->value));
+
+        $dataMulti = $this->multi ? 'true' : 'false';
 
         return <<<HTML
-            <div class="form-control w-full media-field">
+            <div class="form-control w-full media-field" data-multi={$dataMulti}>
                 <label class="label" for="{$this->input_name}">
                     <span class="label-text">{$this->label}</span>
                 </label>
                 
                 <div class="card bg-base-200 p-4">
                     <input type="hidden" name="{$this->input_name}[name]" value="{$this->name}">
-                    <input type="hidden" 
-                           name="{$this->input_name}[value]" 
-                           value="{$this->value}" 
-                           {$required}>
-                    
+
                     <div class="media-preview grid grid-cols-4 gap-4 mb-4">
                         {$preview}
                     </div>
@@ -60,11 +73,14 @@ class MediaField
         HTML;
     }
 
-    private function renderPreview(string $url = '{{url}}', string $name = '{{name}}'): string
+    private function renderPreview(string $url = '{{url}}', string $name = '{{name}}', string $id = '{{id}}'): string
     {
+        $name = !$this->multi ? "{$this->input_name}[value]" : "{$this->input_name}[value][]";
+
         return <<<HTML
             <div class="relative group">
-                <img src="{$url}" alt="{$name}" class="w-full h-32 object-cover rounded">
+                <img src="{$url}" alt="" class="w-full h-32 object-cover rounded">
+                <input type="hidden" name="{$name}" value="{$id}">
                 <button type="button" 
                     onclick="removeMedia(this, event)" 
                     class="btn btn-sm btn-circle btn-error absolute top-1 right-1 opacity-0 group-hover:opacity-100">

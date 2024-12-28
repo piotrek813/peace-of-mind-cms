@@ -1,41 +1,51 @@
 function openMediaModal(field) {
     const modal = document.getElementById('media-modal');
-    const input = Array.from(field.closest('.media-field').querySelectorAll('input')).find(input => input.name.includes('[value]'));
 
-    modal.dataset.field = input.name;
+    modal.dataset.multi = field.closest('.media-field').dataset.multi;
+
+    // maybe be should unregister the listener here
     modal.addEventListener('close', function() {
-        const selected = JSON.parse(input.value);
+        const selected = JSON.parse(modal.dataset.value);
         updatePreview(field.closest('.media-field').querySelector('.media-preview'), selected);
-    });
+    }, { once: true });
+
     modal.showModal();
 }
 
 function updatePreview(mediaPreview, items) {
-    const preview = Array.from(items).map(item => `
-        <div class="relative group">
-            <img src="${item.url}" alt="${item.name}" class="w-full h-32 object-cover rounded">
-            <button type="button" 
-                    onclick="removeMedia(this, event)" 
-                    class="btn btn-sm btn-circle btn-error absolute top-1 right-1 opacity-0 group-hover:opacity-100">
-                ✕
-            </button>
-        </div>
-    `).join('');
+    const previewTemplate = document.getElementById('media-preview-template').content;
 
-    mediaPreview.innerHTML = preview;
+    if (mediaPreview.closest('.media-field').dataset.multi === 'false') {
+        mediaPreview.innerHTML = '';
+    }
+
+    const preview = Array.from(items).map(item => {
+        const clone = previewTemplate.cloneNode(true);
+        clone.querySelector('img').src = item.url;
+        clone.querySelector('img').alt = item.name;
+        clone.querySelector('input').value = item.id;
+        return clone;
+    });
+
+    mediaPreview.append(...preview);
+
+    var a = mediaPreview.closest("[data-index]");
+    var indexes = [];
+    while (a ) {
+        indexes.push(a.dataset.index);
+        a = a.parentNode.closest("[data-index]");
+    }
+
+    indexes.reverse().forEach((index, _) => {
+        mediaPreview.querySelectorAll('[name]').forEach(el => {
+            el.name = el.name.replace("{{index}}", index);
+        });
+    }); 
 }
 
 function removeMedia(button, event) {
     event.stopPropagation(); // Prevent modal from opening when removing
     const mediaItem = button.closest('.relative');
-    const preview = mediaItem.parentElement;
-    const input = preview.closest('.form-control').querySelector('input[type="hidden"]');
-
-    const currentValue = JSON.parse(input.value || '[]');
-    const index = Array.from(preview.children).indexOf(mediaItem);
-
-    currentValue.splice(index, 1);
-    input.value = JSON.stringify(currentValue);
 
     mediaItem.remove();
 }

@@ -14,11 +14,14 @@ function handleSelection() {
     } else {
         copyUrlButton.style.display = "none";
     }
+
+    if (document.querySelector('#media-modal').dataset.multi === 'false') {
+        selectMedia();
+    }
 }
 
 function selectMedia() {
     const modal = document.getElementById('media-modal');
-    modal.close();
 
     const selectedItems = document.querySelectorAll('.media-item:has(input:checked)');
     const selected = Array.from(selectedItems).map(e => ({
@@ -27,10 +30,11 @@ function selectMedia() {
         url: e.querySelector('img').src
     }));
 
+    modal.dataset.value = JSON.stringify(selected);
 
-    const input = document.querySelector(`input[name="${modal.dataset.field}"]`);
-    input.value = JSON.stringify([...selected, ...JSON.parse(input.value)]);
+    console.log(modal.dataset.value);
 
+    modal.close();
     clearSelection();
 }
 
