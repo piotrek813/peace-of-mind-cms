@@ -69,6 +69,14 @@ class Content
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function getBySlug(string $slug)
+    {
+        $sql = "SELECT * FROM content WHERE JSON_EXTRACT(data, '$.seo.slug.value') = :slug LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['slug' => $slug]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     public function getByType(string $type, int $userId): array
     {
         $sql = "SELECT * FROM content WHERE type = :type AND user_id = :user_id ORDER BY created_at DESC";

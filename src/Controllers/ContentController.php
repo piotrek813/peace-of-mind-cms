@@ -10,10 +10,10 @@ class ContentController extends Controller
     public function query()
     {
         try {
-            $id = $_GET['id'];
+            $slug = $_GET['slug'];
 
             $content = new Content();
-            $contentData = $content->getById($id);
+            $contentData = $content->getBySlug($slug);
             
             if (!$contentData) {
                 return $this->json([
