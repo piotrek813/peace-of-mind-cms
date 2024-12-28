@@ -29,7 +29,7 @@ function handleHeaderClick(e) {
 }
 
 function initializeListField(listField) {
-    const addButton = listField.querySelector('.add-item');
+    const addButton = listField.querySelector('&> .add-item');
     const modal = listField.querySelector('.field-search-modal');
     const searchInput = modal.querySelector('.field-search');
     const fieldOptions = modal.querySelectorAll('.field-option');
