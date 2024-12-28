@@ -13,7 +13,7 @@ function openMediaModal(field) {
 }
 
 function updatePreview(mediaPreview, items) {
-    const previewTemplate = mediaPreview.querySelector('.media-preview-template').content;
+    const previewTemplate = mediaPreview.closest('.media-field').querySelector('.media-preview-template').content;
 
     if (mediaPreview.closest('.media-field').dataset.multi === 'false') {
         mediaPreview.innerHTML = '';
