@@ -196,7 +196,7 @@ function initializeListItem(item) {
         e.stopPropagation();
 
         const parentList = item.parentElement.closest('.list-items');
-        const draggingItem = parentList.querySelector(':scope > .list-item.dragging');
+        const draggingItem = parentList.querySelector('& > .list-item.dragging');
 
         if (!draggingItem || draggingItem === item || draggingItem.parentElement !== parentList) return;
 

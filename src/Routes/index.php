@@ -1,6 +1,5 @@
 <?php
 
-use App\Controllers\HomeController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\MediaController;
@@ -12,7 +11,8 @@ use App\Middleware\AuthMiddleware;
 $router = new Router();
 
 // Public routes
-$router->get('/', HomeController::class, 'index', [SessionMiddleware::class]);
+// $router->get('/', HomeController::class, 'index', [SessionMiddleware::class]);
+$router->get('/', AuthController::class, 'loginIndex');
 $router->get('/login', AuthController::class, 'loginIndex');
 $router->post('/login', AuthController::class, 'login', [SessionMiddleware::class]);
 $router->get('/register', AuthController::class, 'registerIndex');
