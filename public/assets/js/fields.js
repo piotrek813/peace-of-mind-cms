@@ -36,7 +36,9 @@ function initializeListField(listField) {
     const listItems = listField.querySelector('&> .list-items');
     const fieldConfigs = JSON.parse(listField.dataset.fields);
 
-    let itemCount = listField.querySelectorAll('.list-item').length;
+    let itemCount = listItems.querySelectorAll('&> .list-item').length;
+    console.log(listItems)
+    console.log("count:", itemCount)
 
     addButton.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -105,6 +107,7 @@ function createListItem(listName, fieldKey, index, config) {
     const clone = template.content.cloneNode(true);
 
     const listItem = clone.querySelector('[data-index]');
+    console.log(index);
     listItem.dataset.index = index;
 
     const label = listItem.querySelector('.font-medium');
@@ -135,7 +138,6 @@ function createFieldContent(listName, fieldKey, config) {
 }
 
 function initializeListItem(item) {
-    console.log(item);
     const deleteBtn = item.querySelector('.delete-item');
     deleteBtn.addEventListener('click', () => {
         item.remove();
