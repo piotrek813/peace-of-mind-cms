@@ -12,6 +12,7 @@ class ListField
     private int $nest_level;
     private string $templates;
     private string $input_name;
+
     public function __construct(array $field, int $nest_level)
     {
         $this->name = $field['name'];

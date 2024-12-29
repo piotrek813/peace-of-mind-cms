@@ -20,27 +20,27 @@ function initializeHeader(header) {
 function handleHeaderClick(e) {
     const content = this.nextElementSibling;
     const icon = this.querySelector('.collapse-icon');
-    
+
     // Toggle the content visibility
     content.classList.toggle('collapsed');
-    
+
     // Rotate the icon
     icon.classList.toggle('rotate-180');
 }
 
 function initializeListField(listField) {
     const addButton = listField.querySelector('&> .add-item');
-    const modal = listField.querySelector('.field-search-modal');
+    const modal = listField.querySelector('&> .field-search-modal');
     const searchInput = modal.querySelector('.field-search');
     const fieldOptions = modal.querySelectorAll('.field-option');
-    const listItems = listField.querySelector('.list-items');
+    const listItems = listField.querySelector('&> .list-items');
     const fieldConfigs = JSON.parse(listField.dataset.fields);
 
     let itemCount = listField.querySelectorAll('.list-item').length;
 
     addButton.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         if (fieldOptions.length === 1) {
             insertField(fieldOptions[0]);
             return;
@@ -75,7 +75,7 @@ function initializeListField(listField) {
     });
 
     // Initialize existing items
-    listItems.querySelectorAll('.list-item').forEach(initializeListItem);
+    listItems.querySelectorAll('&> .list-item').forEach(initializeListItem);
 
     function insertField(option) {
         const fieldKey = option.dataset.fieldKey;
@@ -103,15 +103,15 @@ function initializeListField(listField) {
 function createListItem(listName, fieldKey, index, config) {
     const template = document.getElementById('list-item-template');
     const clone = template.content.cloneNode(true);
-    
+
     const listItem = clone.querySelector('[data-index]');
     listItem.dataset.index = index;
-    
+
     const label = listItem.querySelector('.font-medium');
     label.textContent = config.label;
 
     clone.querySelector('.list-item-content').appendChild(createFieldContent(listName, fieldKey, config));
-    
+
     return clone;
 }
 
@@ -135,6 +135,7 @@ function createFieldContent(listName, fieldKey, config) {
 }
 
 function initializeListItem(item) {
+    console.log(item);
     const deleteBtn = item.querySelector('.delete-item');
     deleteBtn.addEventListener('click', () => {
         item.remove();
@@ -145,10 +146,10 @@ function initializeListItem(item) {
     const content = item.querySelector('.list-item-content');
     const icon = header.querySelector('.collapse-icon');
 
-        // Fill in the indexes in the name attribute for the new item
+    // Fill in the indexes in the name attribute for the new item
     var a = item.closest("[data-index]");
     var indexes = [];
-    while (a ) {
+    while (a) {
         indexes.push(a.dataset.index);
         a = a.parentNode.closest("[data-index]");
     }
@@ -157,8 +158,8 @@ function initializeListItem(item) {
         item.querySelectorAll('[name]').forEach(el => {
             el.name = el.name.replace("{{index}}", index);
         });
-    }); 
-    
+    });
+
     header.addEventListener('click', (e) => {
         // Don't collapse if clicking delete button
         if (e.target.closest('.delete-item')) {
@@ -176,38 +177,38 @@ function initializeListItem(item) {
         }
         item.draggable = true;
     });
-    
+
     header.addEventListener('mouseup', () => {
         item.draggable = false;
     });
-    
+
     item.addEventListener('dragstart', (e) => {
         e.target.closest('.list-item').classList.add('dragging');
     });
-    
+
     item.addEventListener('dragend', (e) => {
         e.target.closest('.list-item').classList.remove('dragging');
         item.draggable = false;
     });
-    
+
     item.addEventListener('dragover', e => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const parentList = item.parentElement.closest('.list-items');
         const draggingItem = parentList.querySelector(':scope > .list-item.dragging');
-        
+
         if (!draggingItem || draggingItem === item || draggingItem.parentElement !== parentList) return;
-        
+
         const rect = item.getBoundingClientRect();
         const offset = e.clientY - rect.top;
         const threshold = rect.height / 2;
-        
+
         if (offset < threshold) {
             parentList.insertBefore(draggingItem, item);
         } else {
             parentList.insertBefore(draggingItem, item.nextElementSibling);
         }
     });
-} 
+}
 
