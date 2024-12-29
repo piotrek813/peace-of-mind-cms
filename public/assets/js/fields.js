@@ -37,8 +37,6 @@ function initializeListField(listField) {
     const fieldConfigs = JSON.parse(listField.dataset.fields);
 
     let itemCount = listItems.querySelectorAll('&> .list-item').length;
-    console.log(listItems)
-    console.log("count:", itemCount)
 
     addButton.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -156,10 +154,20 @@ function initializeListItem(item) {
         a = a.parentNode.closest("[data-index]");
     }
 
-    indexes.reverse().forEach((index, _) => {
-        item.querySelectorAll('[name]').forEach(el => {
-            el.name = el.name.replace("{{index}}", index);
-        });
+    console.log(item);
+
+    item.querySelectorAll('[name]').forEach(el => {
+        const count = (el.name.match(/{{index}}/g) || []).length;
+
+        const splice = indexes.length - count;
+
+        // this is really messed up 
+        [...indexes]
+            .reverse()
+            .splice(splice < 0 ? 0 : splice)
+            .forEach((index, _) => {
+                el.name = el.name.replace("{{index}}", index);
+            });
     });
 
     header.addEventListener('click', (e) => {
