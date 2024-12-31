@@ -11,6 +11,7 @@ use App\Components\Fields\BoolField;
 use App\Components\Fields\MediaField;
 use App\Components\Fields\StaticField;
 use App\Components\Fields\SelectField;
+use App\Components\Fields\RichTextField;
 use App\Services\SchemaService;
 
 class FormBuilder
@@ -86,6 +87,7 @@ class FormBuilder
             'media' => new MediaField($field),
             'static' => new StaticField($field),
             'select' => new SelectField($field),
+            'rich_text' => new RichTextField($field),
             'group' => new GroupField(
                 array_merge($field, [
                     'fields' => $this->create_group_fields($field, $nest_level)

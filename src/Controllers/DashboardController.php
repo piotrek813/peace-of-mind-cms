@@ -160,7 +160,7 @@ class DashboardController extends Controller
         $result = [];
 
         foreach ($data as $key => $value) {
-            if ($key === 'id' || $key === 'type') {
+            if ($key === 'id') {
                 continue;
             }
             if (is_array($value)) {

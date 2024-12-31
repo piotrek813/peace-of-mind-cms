@@ -9,12 +9,15 @@
     <link href="public/assets/css/main.css" rel="stylesheet" type="text/css" />
     
     <!-- Field-specific assets -->
-    <link href="public/assets/css/fields.css" rel="stylesheet" type="text/css" />
     <script src="public/assets/js/fields.js" defer></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 
     <script src="public/assets/js/dashboard.js" defer></script>
     <script src="public/assets/js/media.js" defer></script>
     <script src="public/assets/js/media-field.js" defer></script>
+    <script src="public/assets/js/editor.js" defer></script>
 
     <script>
         const BASE_URL = "<?php echo BASE_URL; ?>";
